@@ -127,12 +127,25 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
 /* ── STATS BAR ── */
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
-.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 20px;}
-.stat-lbl{font-size:8px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
-.stat-val{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:18px 20px 16px;position:relative;overflow:hidden;border-left:3px solid var(--border);}
+.stat-card::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;pointer-events:none;}
+.stat-card.c-accent{border-left-color:var(--accent);}
+.stat-card.c-accent::after{background:linear-gradient(270deg,rgba(0,221,212,.04),transparent);}
+.stat-card.c-green{border-left-color:var(--green);}
+.stat-card.c-green::after{background:linear-gradient(270deg,rgba(52,211,153,.04),transparent);}
+.stat-card.c-amber{border-left-color:var(--amber);}
+.stat-card.c-amber::after{background:linear-gradient(270deg,rgba(245,158,11,.04),transparent);}
+.stat-card.c-purple{border-left-color:var(--purple2);}
+.stat-card.c-purple::after{background:linear-gradient(270deg,rgba(167,139,250,.04),transparent);}
+.stat-lbl{font-size:8px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.stat-val{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;}
 .stat-val.green{color:var(--green);}
 .stat-val.accent{color:var(--accent);}
-.stat-sub{font-size:10px;color:var(--text3);margin-top:3px;}
+.stat-val.amber{color:var(--amber);}
+.stat-val.purple{color:var(--purple2);}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:6px;}
+.stat-bar-wrap{margin-top:10px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.stat-bar-fill{height:100%;border-radius:1px;}
 
 /* ── SECTION HEADER ── */
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
@@ -157,25 +170,35 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
 /* ── TEAM GRID ── */
 .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:28px;}
-.team-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .15s;}
-.team-card:hover{border-color:var(--border2);}
-.team-hdr{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
-.team-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.team-name{font-size:12px;font-weight:800;color:var(--text);letter-spacing:.02em;}
-.team-count{margin-left:auto;font-size:9px;font-weight:700;color:var(--text3);}
+.team-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:all .2s;}
+.team-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.team-hdr{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:relative;}
+.team-hdr-glow{position:absolute;top:0;left:0;right:0;bottom:0;opacity:.04;pointer-events:none;}
+.team-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor;}
+.team-name{font-size:13px;font-weight:800;color:var(--text);letter-spacing:.01em;}
+.team-count{margin-left:auto;font-size:9px;font-weight:700;color:var(--text3);background:var(--panel2);padding:2px 8px;border-radius:10px;border:1px solid var(--border2);}
 .team-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
-.team-mode-row{display:flex;gap:5px;}
-.team-mode-btn{flex:1;height:26px;border-radius:2px;border:1px solid var(--border2);background:var(--panel2);color:var(--text3);font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .1s;font-family:'Inter',sans-serif;}
-.team-mode-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,221,212,.1);}
-.team-fader-row{display:flex;flex-direction:column;gap:6px;}
+.team-mode-row{display:flex;gap:4px;}
+.team-mode-btn{flex:1;height:28px;border-radius:3px;border:1px solid var(--border2);background:var(--panel2);color:var(--text3);font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif;}
+.team-mode-btn.active{background:rgba(0,221,212,.1);border-color:var(--accent);color:var(--accent);box-shadow:inset 0 0 8px rgba(0,221,212,.06);}
+.team-fader-row{display:flex;flex-direction:column;gap:5px;}
 .team-fader-lbl{display:flex;justify-content:space-between;align-items:center;}
 .team-fader-name{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);}
-.team-fader-val{font-size:9px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;}
-.team-fader{width:100%;accent-color:var(--accent);height:2px;cursor:pointer;}
+.team-fader-val{font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;}
+.team-fader{width:100%;height:2px;cursor:pointer;border-radius:1px;}
 .team-footer{padding:10px 18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.team-footer-stat{font-size:9px;color:var(--text3);}
+.team-footer-mode{font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:2px;}
 .team-edit-btn{height:24px;padding:0 10px;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .1s;}
 .team-edit-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* ── Activity feed ── */
+.activity-section{margin-top:28px;}
+.activity-list{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.activity-item{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.activity-text{font-size:11px;color:var(--text2);flex:1;}
+.activity-text strong{color:var(--text);font-weight:700;}
+.activity-time{font-size:9px;color:var(--text3);flex-shrink:0;}
 
 /* ── MEMBERS TABLE ── */
 .members-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
@@ -263,6 +286,10 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     </div>
     <div class="sec-hdr"><div class="sec-title">Teams</div></div>
     <div class="team-grid" id="team-grid-dashboard"></div>
+    <div class="activity-section">
+      <div class="sec-hdr"><div class="sec-title">Recent Activity</div></div>
+      <div class="activity-list" id="activity-list"></div>
+    </div>
   </div>
 
   <!-- ── TEAMS ── -->
@@ -367,16 +394,62 @@ function render(){
   renderTeams();
   renderMembers();
   renderPolicy();
+  renderActivity();
+}
+
+function renderActivity(){
+  const teamMap = {};
+  ORG.teams.forEach(t=>teamMap[t.id]=t);
+  const events = [
+    {color:'#00DDD4', text:'<strong>Engineering</strong> policy updated — intensity raised to 0.75', time:'2 min ago'},
+    {color:'#A78BFA', text:'<strong>Jordan Park</strong> override set — depth 0.80 (was team default)', time:'14 min ago'},
+    {color:'#F59E0B', text:'<strong>Research</strong> switched to EXPLORE mode', time:'1 hr ago'},
+    {color:'#34D399', text:'<strong>Morgan Lee</strong> override set — intensity 0.40', time:'3 hrs ago'},
+    {color:'#00DDD4', text:'Org-wide policy reset — all teams synced to defaults', time:'Yesterday'},
+    {color:'#F87171', text:'<strong>Sales</strong> intensity limit flagged — 2 members exceeded max', time:'Yesterday'},
+  ];
+  const el = document.getElementById('activity-list');
+  if(!el) return;
+  el.innerHTML = events.map(e=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${e.color};box-shadow:0 0 6px ${e.color}88;"></div>
+      <div class="activity-text">${e.text}</div>
+      <div class="activity-time">${e.time}</div>
+    </div>
+  `).join('');
 }
 
 function renderStats(){
   const u = ORG.usage;
   const total = ORG.teams.reduce((a,t)=>a+t.members,0);
+  const overrides = ORG.members.filter(m=>m.intensity!=null||m.depth!=null).length;
+  const usedPct = Math.min(100, (u.tokens_month / 150000000) * 100).toFixed(0);
+  const savePct = Math.min(100, (u.estimated_save / u.cost_month) * 100).toFixed(0);
   document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-card"><div class="stat-lbl">Total Members</div><div class="stat-val accent">${total}</div><div class="stat-sub">${ORG.teams.length} teams</div></div>
-    <div class="stat-card"><div class="stat-lbl">Tokens This Month</div><div class="stat-val">${fmtTokens(u.tokens_month)}</div><div class="stat-sub">$${u.cost_month.toFixed(2)} est. cost</div></div>
-    <div class="stat-card"><div class="stat-lbl">Estimated Savings</div><div class="stat-val green">$${u.estimated_save.toFixed(2)}</div><div class="stat-sub">via behavioral throttling</div></div>
-    <div class="stat-card"><div class="stat-lbl">Active Overrides</div><div class="stat-val">${ORG.members.filter(m=>m.intensity!=null||m.depth!=null).length}</div><div class="stat-sub">individual customizations</div></div>
+    <div class="stat-card c-accent">
+      <div class="stat-lbl">Total Members</div>
+      <div class="stat-val accent">${total}</div>
+      <div class="stat-sub">${ORG.teams.length} teams active</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${Math.min(100,total/2)}%;background:var(--accent)"></div></div>
+    </div>
+    <div class="stat-card c-purple">
+      <div class="stat-lbl">Tokens This Month</div>
+      <div class="stat-val purple">${fmtTokens(u.tokens_month)}</div>
+      <div class="stat-sub">$${u.cost_month.toFixed(2)} est. cost</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${usedPct}%;background:var(--purple2)"></div></div>
+    </div>
+    <div class="stat-card c-green">
+      <div class="stat-lbl">Estimated Savings</div>
+      <div class="stat-val green">$${u.estimated_save.toFixed(2)}</div>
+      <div class="stat-sub">${savePct}% reduction via throttling</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${savePct}%;background:var(--green)"></div></div>
+    </div>
+    <div class="stat-card c-amber">
+      <div class="stat-lbl">Active Overrides</div>
+      <div class="stat-val amber">${overrides}</div>
+      <div class="stat-sub">individual customizations</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${Math.min(100,overrides*10)}%;background:var(--amber)"></div></div>
+    </div>
   `;
 }
 
@@ -407,32 +480,34 @@ function renderOrgControls(){
 
 function teamCardHTML(t, showEdit){
   const modes = ['EXPLORE','BUILD'];
+  const hex = t.color;
+  const modeColor = t.policy.mode==='EXPLORE' ? '#A78BFA' : '#00DDD4';
   return `
-    <div class="team-card">
-      <div class="team-hdr">
-        <div class="team-dot" style="background:${t.color}"></div>
-        <div class="team-name">${t.name}</div>
+    <div class="team-card" style="border-color:${hex}22;">
+      <div class="team-hdr" style="background:linear-gradient(135deg,${hex}0A 0%,transparent 100%);">
+        <div class="team-dot" style="background:${hex};color:${hex};box-shadow:0 0 8px ${hex}88;"></div>
+        <div class="team-name" style="color:${hex};">${t.name}</div>
         <div class="team-count">${t.members} members</div>
       </div>
       <div class="team-body">
         <div class="team-mode-row">
-          ${modes.map(m=>`<button class="team-mode-btn ${t.policy.mode===m?'active':''}" onclick="setTeamMode('${t.id}','${m}')">${m}</button>`).join('')}
+          ${modes.map(m=>`<button class="team-mode-btn ${t.policy.mode===m?'active':''}" style="${t.policy.mode===m?`border-color:${hex};color:${hex};background:${hex}14;`:''}" onclick="setTeamMode('${t.id}','${m}')">${m}</button>`).join('')}
         </div>
         <div class="team-fader-row">
-          <div class="team-fader-lbl"><span class="team-fader-name">Intensity</span><span class="team-fader-val" id="tv-${t.id}-intensity">${fmt(t.policy.intensity)}</span></div>
-          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.intensity}" oninput="updateTeamSlider('${t.id}','intensity',this.value)">
+          <div class="team-fader-lbl"><span class="team-fader-name">Intensity</span><span class="team-fader-val" id="tv-${t.id}-intensity" style="color:${hex}">${fmt(t.policy.intensity)}</span></div>
+          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.intensity}" style="accent-color:${hex}" oninput="updateTeamSlider('${t.id}','intensity',this.value)">
         </div>
         <div class="team-fader-row">
-          <div class="team-fader-lbl"><span class="team-fader-name">Depth</span><span class="team-fader-val" id="tv-${t.id}-depth">${fmt(t.policy.depth)}</span></div>
-          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.depth}" oninput="updateTeamSlider('${t.id}','depth',this.value)">
+          <div class="team-fader-lbl"><span class="team-fader-name">Depth</span><span class="team-fader-val" id="tv-${t.id}-depth" style="color:${hex}">${fmt(t.policy.depth)}</span></div>
+          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.depth}" style="accent-color:${hex}" oninput="updateTeamSlider('${t.id}','depth',this.value)">
         </div>
         <div class="team-fader-row">
-          <div class="team-fader-lbl"><span class="team-fader-name">Verbosity</span><span class="team-fader-val" id="tv-${t.id}-room">${fmt(t.policy.room)}</span></div>
-          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.room}" oninput="updateTeamSlider('${t.id}','room',this.value)">
+          <div class="team-fader-lbl"><span class="team-fader-name">Verbosity</span><span class="team-fader-val" id="tv-${t.id}-room" style="color:${hex}">${fmt(t.policy.room)}</span></div>
+          <input type="range" class="team-fader" min="0" max="1" step="0.05" value="${t.policy.room}" style="accent-color:${hex}" oninput="updateTeamSlider('${t.id}','room',this.value)">
         </div>
       </div>
-      <div class="team-footer">
-        <div class="team-footer-stat">${t.policy.mode} · ${fmt(t.policy.intensity)} intensity</div>
+      <div class="team-footer" style="background:${hex}06;">
+        <span class="team-footer-mode" style="color:${hex};background:${hex}14;border:1px solid ${hex}33;">${t.policy.mode}</span>
         ${showEdit?`<button class="team-edit-btn" onclick="editTeam('${t.id}')">Edit</button>`:''}
       </div>
     </div>
