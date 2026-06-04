@@ -1290,4 +1290,5 @@ if __name__ == '__main__':
     print('│  AiGain  ·  Enterprise AI Control    │')
     print('│  http://127.0.0.1:5571               │')
     print('└─────────────────────────────────────┘\n')
-    app.run(host='127.0.0.1', port=5571, debug=False)
+    port = int(os.environ.get("PORT", 5571))
+    app.run(host='0.0.0.0', port=port, debug=False)
