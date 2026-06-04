@@ -246,6 +246,11 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .hdr-plan{font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,221,212,.3);padding:3px 8px;border-radius:2px;background:rgba(0,221,212,.05);}
 .hdr-usage{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.06em;}
 
+/* ── HERO SIGNAL ── */
+.hero-signal{width:100%;height:72px;display:block;flex-shrink:0;position:relative;overflow:hidden;}
+.hero-signal svg{width:100%;height:100%;}
+.hero-signal-label{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:8px;font-weight:900;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,221,212,.4);pointer-events:none;}
+
 /* ── NAV ── */
 .nav{display:flex;gap:2px;border-bottom:1px solid var(--border);background:var(--panel);padding:0 28px;}
 .nav-btn{height:40px;padding:0 16px;border:none;background:none;color:var(--text3);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;font-family:'Inter',sans-serif;}
@@ -426,7 +431,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 <body>
 
 <header class="hdr">
-  <div class="brand">AiGain</div>
+  <div class="brand">AiGAIN</div>
   <div class="hdr-tag">Enterprise</div>
   <div class="hdr-right">
     <div class="hdr-org" id="hdr-org-name">—</div>
@@ -435,6 +440,67 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     <button class="faq-btn" onclick="openFaq()" title="What is AiGain?">?</button>
   </div>
 </header>
+
+<!-- ── HERO SIGNAL STRIP ── -->
+<div class="hero-signal">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 72" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="ag-bg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#060A0F"/>
+        <stop offset="100%" stop-color="#040608"/>
+      </linearGradient>
+      <linearGradient id="ag-scan" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#00C8C0" stop-opacity="0"/>
+        <stop offset="35%" stop-color="#00C8C0" stop-opacity="0.10"/>
+        <stop offset="65%" stop-color="#00C8C0" stop-opacity="0.10"/>
+        <stop offset="100%" stop-color="#00C8C0" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="ag-glow-teal" x="-8%" y="-80%" width="116%" height="260%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="ag-glow-purple" x="-4%" y="-60%" width="108%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="ag-glow-magenta" x="-4%" y="-60%" width="108%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Background -->
+    <rect width="1200" height="72" fill="url(#ag-bg)"/>
+    <!-- Grid lines horizontal -->
+    <line x1="0" y1="12" x2="1200" y2="12" stroke="#162030" stroke-width="0.5"/>
+    <line x1="0" y1="36" x2="1200" y2="36" stroke="#1E2E40" stroke-width="0.8"/>
+    <line x1="0" y1="60" x2="1200" y2="60" stroke="#162030" stroke-width="0.5"/>
+    <!-- Grid lines vertical -->
+    <line x1="150"  y1="0" x2="150"  y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="300"  y1="0" x2="300"  y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="450"  y1="0" x2="450"  y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="600"  y1="0" x2="600"  y2="72" stroke="#1E2E40" stroke-width="0.8"/>
+    <line x1="750"  y1="0" x2="750"  y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="900"  y1="0" x2="900"  y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="1050" y1="0" x2="1050" y2="72" stroke="#162030" stroke-width="0.5"/>
+    <!-- Oscilloscope pulse (teal) -->
+    <polyline points="0,36 30,36 38,18 46,54 54,10 62,62 70,24 78,48 86,36 130,36" stroke="#00DDD4" stroke-width="1.5" fill="none" opacity="0.75" filter="url(#ag-glow-teal)"/>
+    <!-- Sine wave (purple) -->
+    <path d="M130,36 C175,36 190,10 235,10 C280,10 295,62 340,62 C385,62 400,10 445,10 C490,10 505,62 550,62 C595,62 610,36 670,36 C730,36 745,10 790,10 C835,10 850,62 895,62 C940,62 955,10 1000,10 C1045,10 1060,62 1105,62 C1150,62 1165,36 1200,36" stroke="#8B5CF6" stroke-width="1.8" fill="none" opacity="0.5" filter="url(#ag-glow-purple)"/>
+    <!-- Magenta accent wave (new — AiGain specific) -->
+    <path d="M0,36 C60,36 80,22 150,22 C220,22 240,50 300,50 C360,50 380,22 450,22 C520,22 540,50 600,50 C660,50 680,36 750,36 C820,36 840,20 900,20 C960,20 980,52 1050,52 C1110,52 1130,36 1200,36" stroke="#D946EF" stroke-width="1.2" fill="none" opacity="0.3" filter="url(#ag-glow-magenta)"/>
+    <!-- Scan line -->
+    <rect x="0" y="33" width="1200" height="5" fill="url(#ag-scan)"/>
+    <!-- Intersection dots -->
+    <circle cx="130"  cy="36" r="2.5" fill="#00C8C0" opacity="0.7"/>
+    <circle cx="600"  cy="50" r="2"   fill="#8B5CF6" opacity="0.6"/>
+    <circle cx="1050" cy="52" r="1.8" fill="#D946EF" opacity="0.5"/>
+    <!-- Bottom border -->
+    <rect x="0" y="70" width="1200" height="2" fill="#00C8C0" opacity="0.12"/>
+    <!-- Left origin -->
+    <line x1="0" y1="0" x2="0" y2="72" stroke="#00C8C0" stroke-width="2" opacity="0.25"/>
+  </svg>
+  <div class="hero-signal-label">behavioral signal</div>
+</div>
 
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
@@ -569,7 +635,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 <div class="faq-overlay" id="faq-overlay" onclick="closeFaq()"></div>
 <div class="faq-panel" id="faq-panel">
   <div class="faq-hd">
-    <span class="faq-title">AiGain</span>
+    <span class="faq-title">AiGAIN</span>
     <button class="faq-close" onclick="closeFaq()">✕</button>
   </div>
   <div class="faq-body">
