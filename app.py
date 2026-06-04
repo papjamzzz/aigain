@@ -382,6 +382,31 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 /* ── EMPTY STATE ── */
 .empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:11px;}
 
+/* ── FAQ ── */
+.faq-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,221,212,.4);background:rgba(0,221,212,.07);color:var(--accent);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;flex-shrink:0;font-family:'Inter',sans-serif;}
+.faq-btn:hover{background:rgba(0,221,212,.18);border-color:var(--accent);box-shadow:0 0 12px rgba(0,221,212,.25);}
+.faq-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;}
+.faq-overlay.open{display:block;}
+.faq-panel{position:fixed;right:-520px;top:0;bottom:0;width:480px;background:var(--panel);border-left:2px solid var(--accent);z-index:301;transition:right .26s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.8);}
+.faq-panel.open{right:0;}
+.faq-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#040810;}
+.faq-title{font-family:'Abril Fatface',serif;font-size:22px;color:var(--accent);text-shadow:0 0 20px rgba(0,221,212,.35);}
+.faq-close{width:26px;height:26px;border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:13px;color:var(--text2);border-radius:50%;transition:background .12s;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.faq-close:hover{background:var(--panel2);color:var(--accent);}
+.faq-body{padding:24px 22px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:22px;}
+.faq-s{}
+.faq-s-title{font-size:8px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;text-shadow:0 0 8px rgba(0,200,192,.3);}
+.faq-p{font-size:12px;line-height:1.75;color:var(--text2);margin-bottom:6px;}
+.faq-p strong{color:var(--text);font-weight:700;}
+.faq-divider{height:1px;background:var(--border);margin:2px 0;}
+.faq-track{margin-bottom:8px;padding:10px 14px;background:#060A0F;border-radius:4px;border-left:3px solid var(--accent);}
+.faq-track-name{font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;letter-spacing:.06em;}
+.faq-track-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.faq-code{font-family:'Courier New',monospace;font-size:10px;background:#040608;padding:8px 12px;border-radius:3px;color:var(--accent);margin:6px 0;display:block;border:1px solid var(--border);line-height:1.6;}
+.faq-tag{display:inline-block;font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-right:4px;margin-bottom:4px;}
+.faq-tag.build{color:var(--accent);background:rgba(0,221,212,.1);border:1px solid rgba(0,221,212,.25);}
+.faq-tag.explore{color:var(--purple2);background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);}
+
 /* ── CHARTS ── */
 .chart-row{display:flex;gap:14px;margin-bottom:14px;}
 .chart-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-width:0;}
@@ -407,6 +432,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     <div class="hdr-org" id="hdr-org-name">—</div>
     <div class="hdr-plan">Enterprise Plan</div>
     <div class="hdr-usage" id="hdr-usage">—</div>
+    <button class="faq-btn" onclick="openFaq()" title="What is AiGain?">?</button>
   </div>
 </header>
 
@@ -536,6 +562,89 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
       <button class="btn" onclick="closeModal('add-team-modal')">Cancel</button>
       <button class="btn primary" onclick="addTeam()">Create Team</button>
     </div>
+  </div>
+</div>
+
+<!-- ── FAQ PANEL ── -->
+<div class="faq-overlay" id="faq-overlay" onclick="closeFaq()"></div>
+<div class="faq-panel" id="faq-panel">
+  <div class="faq-hd">
+    <span class="faq-title">AiGain</span>
+    <button class="faq-close" onclick="closeFaq()">✕</button>
+  </div>
+  <div class="faq-body">
+
+    <div class="faq-s">
+      <div class="faq-s-title">What is AiGain?</div>
+      <p class="faq-p">AiGain is a <strong>behavioral control layer</strong> that sits between your organization and its AI usage. It controls how Claude thinks — not just what you ask it, but the cognitive mode it operates in when responding.</p>
+      <p class="faq-p">Every employee using AI today gets the same default behavior regardless of their role, their task, or what the company actually needs. AiGain fixes that.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">The Problem It Solves</div>
+      <p class="faq-p">A support agent needs an AI that <strong>explores empathetically</strong> and asks clarifying questions. An engineer needs one that <strong>executes immediately</strong> and ships code. A researcher needs one that <strong>goes deep</strong> and surfaces trade-offs.</p>
+      <p class="faq-p">Without AiGain, all three get the same model behavior. Tokens burn. Quality suffers. The company has no visibility and no control.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">How It Works</div>
+      <p class="faq-p">AiGain acts as a <strong>drop-in proxy</strong> for the Anthropic API. Your existing Claude integration points to AiGain instead of Anthropic directly. One line of code changes.</p>
+      <code class="faq-code">
+        # Before<br>
+        base_url = "https://api.anthropic.com"<br><br>
+        # After<br>
+        base_url = "https://aigain-production.up.railway.app/v1"
+      </code>
+      <p class="faq-p">Every API call passes through AiGain. It looks up the team key, resolves the behavioral policy for that team, injects the right system prompt instructions, then forwards the request to Anthropic. The response comes back unchanged.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">Behavioral Modes</div>
+      <div class="faq-track" style="border-left-color:var(--accent);">
+        <div class="faq-track-name"><span class="faq-tag build">BUILD</span>Execute mode</div>
+        <div class="faq-track-desc">Claude picks the best approach and implements it immediately. No alternatives presented. No thinking out loud. Output only. Ideal for engineering teams shipping code.</div>
+      </div>
+      <div class="faq-track" style="border-left-color:var(--purple2);">
+        <div class="faq-track-name"><span class="faq-tag explore">EXPLORE</span>Analysis mode</div>
+        <div class="faq-track-desc">Claude covers multiple approaches, surfaces trade-offs, asks clarifying questions, and ends with decision points. Ideal for support, research, and strategy work.</div>
+      </div>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">The Control Hierarchy</div>
+      <p class="faq-p">Behavioral policy flows top-down, with each level able to override the one above:</p>
+      <div class="faq-track" style="border-left-color:var(--amber);">
+        <div class="faq-track-name" style="color:var(--amber);">Org Policy</div>
+        <div class="faq-track-desc">Company-wide defaults. Every team starts here unless overridden. Set the floor and ceiling — min/max intensity, allowed modes, governance rules.</div>
+      </div>
+      <div class="faq-track" style="border-left-color:var(--green);">
+        <div class="faq-track-name" style="color:var(--green);">Team Policy</div>
+        <div class="faq-track-desc">Each team gets its own behavioral preset. Engineering gets BUILD. Support gets EXPLORE. Research gets deep depth and high verbosity. One API key per team.</div>
+      </div>
+      <div class="faq-track" style="border-left-color:var(--purple2);">
+        <div class="faq-track-name" style="color:var(--purple2);">Individual Override</div>
+        <div class="faq-track-desc">Senior engineers can unlock higher intensity. Specific roles can get tighter scope. Tracked and visible to admins.</div>
+      </div>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">What Gets Tracked</div>
+      <p class="faq-p"><strong>Token usage</strong> per team — see exactly where your AI budget is going.<br>
+      <strong>Behavioral states</strong> — every policy change is logged with timestamp.<br>
+      <strong>Active overrides</strong> — see which individuals are running outside team defaults.<br>
+      <strong>Estimated savings</strong> — tokens saved by throttling teams that don't need max intensity.</p>
+    </div>
+
   </div>
 </div>
 
@@ -1086,6 +1195,9 @@ async function regenerateTeamKey(teamId){
   const data = await r.json();
   loadKeys();
 }
+
+function openFaq(){ document.getElementById('faq-overlay').classList.add('open'); document.getElementById('faq-panel').classList.add('open'); }
+function closeFaq(){ document.getElementById('faq-overlay').classList.remove('open'); document.getElementById('faq-panel').classList.remove('open'); }
 
 function togglePolicyEdit(){
   const body = document.getElementById('org-controls');
