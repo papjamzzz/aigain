@@ -239,7 +239,9 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 /* ── HEADER ── */
 .hdr{height:64px;display:flex;align-items:center;padding:0 28px;border-bottom:1px solid var(--border);background:#030507;position:sticky;top:0;z-index:200;gap:12px;}
 .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,221,212,.5),transparent);}
-.brand{font-family:'Abril Fatface',serif;font-size:32px;letter-spacing:.04em;background:linear-gradient(130deg,#00E8FF,#A0C8FF,#D946EF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px rgba(0,200,255,.4)) drop-shadow(0 0 20px rgba(217,70,239,.25));}
+.brand{font-family:'Abril Fatface',serif;display:flex;align-items:baseline;gap:0;line-height:1;}
+.brand-ai{font-size:15px;letter-spacing:.06em;color:rgba(160,200,255,.55);-webkit-text-fill-color:rgba(160,200,255,.55);}
+.brand-gain{font-size:34px;letter-spacing:.04em;background:linear-gradient(130deg,#00E8FF,#A0C8FF,#D946EF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(0,200,255,.5)) drop-shadow(0 0 24px rgba(217,70,239,.3));}
 .hdr-tag{font-size:8px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);border:1px solid var(--border2);padding:3px 8px;border-radius:2px;}
 .hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .hdr-org{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em;}
@@ -247,9 +249,10 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .hdr-usage{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.06em;}
 
 /* ── HERO SIGNAL ── */
-.hero-signal{width:100%;height:72px;display:block;flex-shrink:0;position:relative;overflow:hidden;}
+.hero-signal{width:100%;height:140px;display:block;flex-shrink:0;position:relative;overflow:hidden;}
 .hero-signal svg{width:100%;height:100%;}
-.hero-signal-label{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:8px;font-weight:900;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,221,212,.4);pointer-events:none;}
+.hero-signal-label{position:absolute;left:20px;bottom:14px;font-size:8px;font-weight:900;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,221,212,.35);pointer-events:none;}
+.hero-gain-overlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Abril Fatface',serif;font-size:80px;letter-spacing:.08em;background:linear-gradient(130deg,#00E8FF 0%,#A0C8FF 50%,#D946EF 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(0,200,255,.35)) drop-shadow(0 0 60px rgba(217,70,239,.2));opacity:.92;pointer-events:none;white-space:nowrap;}
 
 /* ── NAV ── */
 .nav{display:flex;gap:2px;border-bottom:1px solid var(--border);background:var(--panel);padding:0 28px;}
@@ -431,7 +434,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 <body>
 
 <header class="hdr">
-  <div class="brand">AiGAIN</div>
+  <div class="brand"><span class="brand-ai">Ai</span><span class="brand-gain">GAIN</span></div>
   <div class="hdr-tag">Enterprise</div>
   <div class="hdr-right">
     <div class="hdr-org" id="hdr-org-name">—</div>
@@ -443,62 +446,64 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
 <!-- ── HERO SIGNAL STRIP ── -->
 <div class="hero-signal">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 72" preserveAspectRatio="xMidYMid slice">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
     <defs>
       <linearGradient id="ag-bg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#060A0F"/>
-        <stop offset="100%" stop-color="#040608"/>
+        <stop offset="0%" stop-color="#06090E"/>
+        <stop offset="50%" stop-color="#040810"/>
+        <stop offset="100%" stop-color="#030507"/>
       </linearGradient>
       <linearGradient id="ag-scan" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#00C8C0" stop-opacity="0"/>
-        <stop offset="35%" stop-color="#00C8C0" stop-opacity="0.10"/>
-        <stop offset="65%" stop-color="#00C8C0" stop-opacity="0.10"/>
+        <stop offset="35%" stop-color="#00C8C0" stop-opacity="0.08"/>
+        <stop offset="65%" stop-color="#00C8C0" stop-opacity="0.08"/>
         <stop offset="100%" stop-color="#00C8C0" stop-opacity="0"/>
       </linearGradient>
       <filter id="ag-glow-teal" x="-8%" y="-80%" width="116%" height="260%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
       <filter id="ag-glow-purple" x="-4%" y="-60%" width="108%" height="220%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
       <filter id="ag-glow-magenta" x="-4%" y="-60%" width="108%" height="220%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
     </defs>
     <!-- Background -->
-    <rect width="1200" height="72" fill="url(#ag-bg)"/>
+    <rect width="1200" height="140" fill="url(#ag-bg)"/>
     <!-- Grid lines horizontal -->
-    <line x1="0" y1="12" x2="1200" y2="12" stroke="#162030" stroke-width="0.5"/>
-    <line x1="0" y1="36" x2="1200" y2="36" stroke="#1E2E40" stroke-width="0.8"/>
-    <line x1="0" y1="60" x2="1200" y2="60" stroke="#162030" stroke-width="0.5"/>
+    <line x1="0" y1="28"  x2="1200" y2="28"  stroke="#162030" stroke-width="0.5"/>
+    <line x1="0" y1="70"  x2="1200" y2="70"  stroke="#1E2E40" stroke-width="0.8"/>
+    <line x1="0" y1="112" x2="1200" y2="112" stroke="#162030" stroke-width="0.5"/>
     <!-- Grid lines vertical -->
-    <line x1="150"  y1="0" x2="150"  y2="72" stroke="#162030" stroke-width="0.5"/>
-    <line x1="300"  y1="0" x2="300"  y2="72" stroke="#162030" stroke-width="0.5"/>
-    <line x1="450"  y1="0" x2="450"  y2="72" stroke="#162030" stroke-width="0.5"/>
-    <line x1="600"  y1="0" x2="600"  y2="72" stroke="#1E2E40" stroke-width="0.8"/>
-    <line x1="750"  y1="0" x2="750"  y2="72" stroke="#162030" stroke-width="0.5"/>
-    <line x1="900"  y1="0" x2="900"  y2="72" stroke="#162030" stroke-width="0.5"/>
-    <line x1="1050" y1="0" x2="1050" y2="72" stroke="#162030" stroke-width="0.5"/>
+    <line x1="150"  y1="0" x2="150"  y2="140" stroke="#162030" stroke-width="0.5"/>
+    <line x1="300"  y1="0" x2="300"  y2="140" stroke="#162030" stroke-width="0.5"/>
+    <line x1="450"  y1="0" x2="450"  y2="140" stroke="#162030" stroke-width="0.5"/>
+    <line x1="600"  y1="0" x2="600"  y2="140" stroke="#1E2E40" stroke-width="0.8"/>
+    <line x1="750"  y1="0" x2="750"  y2="140" stroke="#162030" stroke-width="0.5"/>
+    <line x1="900"  y1="0" x2="900"  y2="140" stroke="#162030" stroke-width="0.5"/>
+    <line x1="1050" y1="0" x2="1050" y2="140" stroke="#162030" stroke-width="0.5"/>
     <!-- Oscilloscope pulse (teal) -->
-    <polyline points="0,36 30,36 38,18 46,54 54,10 62,62 70,24 78,48 86,36 130,36" stroke="#00DDD4" stroke-width="1.5" fill="none" opacity="0.75" filter="url(#ag-glow-teal)"/>
+    <polyline points="0,70 30,70 42,34 54,106 66,18 78,122 90,46 102,94 114,70 160,70" stroke="#00DDD4" stroke-width="2" fill="none" opacity="0.8" filter="url(#ag-glow-teal)"/>
     <!-- Sine wave (purple) -->
-    <path d="M130,36 C175,36 190,10 235,10 C280,10 295,62 340,62 C385,62 400,10 445,10 C490,10 505,62 550,62 C595,62 610,36 670,36 C730,36 745,10 790,10 C835,10 850,62 895,62 C940,62 955,10 1000,10 C1045,10 1060,62 1105,62 C1150,62 1165,36 1200,36" stroke="#8B5CF6" stroke-width="1.8" fill="none" opacity="0.5" filter="url(#ag-glow-purple)"/>
-    <!-- Magenta accent wave (new — AiGain specific) -->
-    <path d="M0,36 C60,36 80,22 150,22 C220,22 240,50 300,50 C360,50 380,22 450,22 C520,22 540,50 600,50 C660,50 680,36 750,36 C820,36 840,20 900,20 C960,20 980,52 1050,52 C1110,52 1130,36 1200,36" stroke="#D946EF" stroke-width="1.2" fill="none" opacity="0.3" filter="url(#ag-glow-magenta)"/>
+    <path d="M160,70 C210,70 230,18 280,18 C330,18 350,122 400,122 C450,122 470,18 520,18 C570,18 590,122 640,122 C690,122 710,70 770,70 C830,70 850,18 900,18 C950,18 970,122 1020,122 C1070,122 1090,18 1140,18 C1170,18 1185,70 1200,70" stroke="#8B5CF6" stroke-width="2.2" fill="none" opacity="0.55" filter="url(#ag-glow-purple)"/>
+    <!-- Magenta accent wave -->
+    <path d="M0,70 C70,70 90,42 160,42 C240,42 260,98 340,98 C420,98 440,42 520,42 C600,42 620,98 700,98 C780,98 800,70 880,70 C960,70 980,38 1060,38 C1130,38 1160,70 1200,70" stroke="#D946EF" stroke-width="1.5" fill="none" opacity="0.35" filter="url(#ag-glow-magenta)"/>
     <!-- Scan line -->
-    <rect x="0" y="33" width="1200" height="5" fill="url(#ag-scan)"/>
+    <rect x="0" y="66" width="1200" height="8" fill="url(#ag-scan)"/>
     <!-- Intersection dots -->
-    <circle cx="130"  cy="36" r="2.5" fill="#00C8C0" opacity="0.7"/>
-    <circle cx="600"  cy="50" r="2"   fill="#8B5CF6" opacity="0.6"/>
-    <circle cx="1050" cy="52" r="1.8" fill="#D946EF" opacity="0.5"/>
+    <circle cx="160"  cy="70" r="3"   fill="#00C8C0" opacity="0.8"/>
+    <circle cx="640"  cy="98" r="2.5" fill="#8B5CF6" opacity="0.65"/>
+    <circle cx="1060" cy="38" r="2.2" fill="#D946EF" opacity="0.55"/>
     <!-- Bottom border -->
-    <rect x="0" y="70" width="1200" height="2" fill="#00C8C0" opacity="0.12"/>
+    <rect x="0" y="137" width="1200" height="3" fill="#00C8C0" opacity="0.15"/>
     <!-- Left origin -->
-    <line x1="0" y1="0" x2="0" y2="72" stroke="#00C8C0" stroke-width="2" opacity="0.25"/>
+    <line x1="0" y1="0" x2="0" y2="140" stroke="#00C8C0" stroke-width="2.5" opacity="0.25"/>
   </svg>
+  <div class="hero-gain-overlay">GAIN</div>
   <div class="hero-signal-label">behavioral signal</div>
 </div>
 
