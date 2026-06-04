@@ -72,8 +72,29 @@ def load_keys() -> dict:
 def save_keys(keys: dict):
     KEYS_FILE.write_text(json.dumps(keys, indent=2))
 
-def generate_key(org_id: str, team_id: str = None, member_id: str = None) -> str:
+def generate_key(team_id: str = None) -> str:
     return "ag-" + secrets.token_hex(24)
+
+def ensure_team_keys():
+    """Auto-generate one key per team if not already present."""
+    org  = load_org()
+    keys = load_keys()
+    changed = False
+    for team in org.get("teams", []):
+        has_key = any(v.get("team_id") == team["id"] and v.get("active") for v in keys.values())
+        if not has_key:
+            key_id = "kid_" + uuid.uuid4().hex[:12]
+            keys[key_id] = {
+                "key":       generate_key(team["id"]),
+                "label":     team["name"] + " Key",
+                "team_id":   team["id"],
+                "member_id": None,
+                "created":   int(time.time()),
+                "active":    True,
+            }
+            changed = True
+    if changed:
+        save_keys(keys)
 
 def resolve_policy(key_meta: dict, org: dict) -> dict:
     """Return the effective behavioral policy for a given API key."""
@@ -472,24 +493,18 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
   <!-- ── API KEYS ── -->
   <div id="page-keys" class="page">
-    <div class="sec-hdr">
-      <div class="sec-title">API Keys</div>
-      <button class="sec-action" onclick="openAddKey()">+ Generate Key</button>
-    </div>
+    <div class="sec-hdr"><div class="sec-title">API Keys — One Per Team</div></div>
     <div style="background:var(--panel);border:1px solid rgba(0,221,212,.2);border-radius:6px;padding:16px 20px;margin-bottom:20px;border-left:3px solid var(--accent);">
       <div style="font-size:10px;font-weight:800;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Drop-in Anthropic Replacement</div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.7;">Replace <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">https://api.anthropic.com</code> with your AiGain endpoint. Pass your AiGain key via <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">x-aigain-key</code> header. Behavioral state is injected automatically based on the key's team assignment.</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.7;">Replace <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">https://api.anthropic.com</code> with your AiGain endpoint. Pass your team key via <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">x-aigain-key</code> header. Behavioral state is injected automatically per team policy.</div>
       <div style="margin-top:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:4px;padding:10px 14px;font-size:11px;font-family:monospace;color:#A78BFA;">
         client = Anthropic(<br>
-        &nbsp;&nbsp;base_url=<span style="color:#34D399">"http://127.0.0.1:5571/v1"</span>,<br>
-        &nbsp;&nbsp;api_key=<span style="color:#34D399">"ag-your-key-here"</span>,<br>
+        &nbsp;&nbsp;base_url=<span style="color:#34D399">"http://your-aigain-host/v1"</span>,<br>
+        &nbsp;&nbsp;api_key=<span style="color:#34D399">"ag-your-team-key"</span>,<br>
         )
       </div>
     </div>
-    <table class="members-table" id="keys-table">
-      <thead><tr><th>Label</th><th>Team</th><th>Key</th><th>Created</th><th>Status</th><th></th></tr></thead>
-      <tbody id="keys-tbody"></tbody>
-    </table>
+    <div id="team-keys-grid" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
 
   <!-- ── POLICY ── -->
@@ -840,9 +855,11 @@ async function addTeam(){
   const id = name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
   ORG.teams.push({id, name, color, members:0, policy:{mode, intensity, depth:0.5, certainty:0.5, room:0.5}});
   await patch({teams: ORG.teams});
+  await fetch('/api/keys/ensure', {method:'POST'});
   closeModal('add-team-modal');
   document.getElementById('new-team-name').value = '';
   renderTeams();
+  loadKeys();
 }
 
 async function addMember(){
@@ -1028,25 +1045,46 @@ async function revokeKey(keyId){
 }
 
 function renderKeys(){
-  const teamMap = {};
-  if(ORG) ORG.teams.forEach(t=>teamMap[t.id]=t);
-  const tbody = document.getElementById('keys-tbody');
-  if(!tbody) return;
-  const entries = Object.entries(KEYS);
-  if(!entries.length){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">No keys yet. Generate one to get started.</td></tr>'; return; }
-  tbody.innerHTML = entries.map(([kid, k])=>{
-    const team = teamMap[k.team_id] || null;
-    const created = new Date(k.created*1000).toLocaleDateString();
-    const masked = k.key.slice(0,8) + '••••••••••••••••' + k.key.slice(-4);
-    return `<tr>
-      <td><div class="member-name">${k.label}</div></td>
-      <td>${team ? `<span class="member-team-tag" style="background:${team.color}22;color:${team.color};border:1px solid ${team.color}44">${team.name}</span>` : '<span style="color:var(--text3);font-size:10px;">Org default</span>'}</td>
-      <td><code style="font-size:10px;color:var(--text3);letter-spacing:.04em;">${masked}</code></td>
-      <td style="color:var(--text3);font-size:10px;">${created}</td>
-      <td><span style="font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;${k.active?'color:var(--green);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)':'color:var(--red);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3)'}">${k.active?'ACTIVE':'REVOKED'}</span></td>
-      <td>${k.active?`<button class="team-edit-btn" onclick="revokeKey('${kid}')" style="color:var(--red);border-color:rgba(248,113,113,.3);">Revoke</button>`:''}</td>
-    </tr>`;
+  if(!ORG) return;
+  const grid = document.getElementById('team-keys-grid');
+  if(!grid) return;
+  grid.innerHTML = ORG.teams.map(team=>{
+    const entry = Object.entries(KEYS).find(([,v])=>v.team_id===team.id && v.active);
+    const kid   = entry ? entry[0] : null;
+    const k     = entry ? entry[1] : null;
+    const masked = k ? k.key.slice(0,10)+'••••••••••••••••••••'+k.key.slice(-4) : '—';
+    return `
+      <div style="background:var(--panel);border:1px solid ${team.color}33;border-radius:6px;padding:16px 20px;display:flex;align-items:center;gap:20px;border-left:3px solid ${team.color};">
+        <div style="flex-shrink:0;">
+          <div style="font-size:12px;font-weight:800;color:${team.color};margin-bottom:3px;">${team.name}</div>
+          <div style="font-size:9px;color:var(--text3);">${team.members} members · ${team.policy.mode}</div>
+        </div>
+        <code style="flex:1;font-size:11px;color:var(--text3);letter-spacing:.04em;background:var(--panel2);padding:8px 12px;border-radius:3px;border:1px solid var(--border2);">${masked}</code>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          ${k ? `<button class="sec-action" onclick="copyKey('${k.key}')" style="border-color:${team.color}55;color:${team.color};">Copy Key</button>` : ''}
+          ${kid && k?.active ? `<button class="team-edit-btn" onclick="revokeKey('${kid}')" style="color:var(--red);border-color:rgba(248,113,113,.3);">Revoke</button>` : ''}
+          ${!k ? `<button class="sec-action" onclick="regenerateTeamKey('${team.id}')">Generate</button>` : ''}
+        </div>
+      </div>
+    `;
   }).join('');
+}
+
+function copyKey(key){
+  navigator.clipboard.writeText(key).then(()=>{
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(()=>btn.textContent=orig, 1500);
+  });
+}
+
+async function regenerateTeamKey(teamId){
+  const team = ORG.teams.find(t=>t.id===teamId);
+  if(!team) return;
+  const r = await fetch('/api/keys', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({label: team.name+' Key', team_id: teamId})});
+  const data = await r.json();
+  loadKeys();
 }
 
 function togglePolicyEdit(){
@@ -1089,6 +1127,11 @@ def health():
 @app.route('/api/keys', methods=['GET'])
 def list_keys():
     return jsonify(load_keys())
+
+@app.route('/api/keys/ensure', methods=['POST'])
+def ensure_keys_route():
+    ensure_team_keys()
+    return jsonify({'ok': True})
 
 @app.route('/api/keys', methods=['POST'])
 def create_key():
@@ -1242,6 +1285,7 @@ def test_proxy():
 
 
 if __name__ == '__main__':
+    ensure_team_keys()
     print('\n┌─────────────────────────────────────┐')
     print('│  AiGain  ·  Enterprise AI Control    │')
     print('│  http://127.0.0.1:5571               │')
