@@ -1,14 +1,124 @@
-from flask import Flask, jsonify, request, redirect
+from flask import Flask, jsonify, request, redirect, Response, stream_with_context
 from dotenv import load_dotenv
 from pathlib import Path
-import json, os, time
+import json, os, time, uuid, hashlib, hmac, secrets
+import urllib.request, urllib.error
 
 load_dotenv()
 app = Flask(__name__)
 
-DATA_DIR  = Path(__file__).parent / "data"
-ORG_FILE  = DATA_DIR / "org.json"
+DATA_DIR   = Path(__file__).parent / "data"
+ORG_FILE   = DATA_DIR / "org.json"
+KEYS_FILE  = DATA_DIR / "api_keys.json"
+USAGE_FILE = DATA_DIR / "usage_log.json"
 DATA_DIR.mkdir(exist_ok=True)
+
+ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
+ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
+# ── Gain behavioral prompt builder ────────────────────────────────────────────
+
+def build_behavioral_prompt(policy: dict) -> str:
+    mode      = policy.get("mode", "BUILD")
+    intensity = policy.get("intensity", 0.6)
+    depth     = policy.get("depth", 0.5)
+    room      = policy.get("room", 0.4)
+
+    if mode == "EXPLORE":
+        mode_rules = (
+            "MODE: EXPLORE\n"
+            "- Think out loud. Show full reasoning.\n"
+            "- Cover multiple approaches, angles, and trade-offs.\n"
+            "- Ask clarifying questions if the problem is ambiguous.\n"
+            "- Do NOT write code or make changes unless explicitly asked.\n"
+            "- End with open questions or decision points."
+        )
+    else:
+        mode_rules = (
+            "MODE: BUILD\n"
+            "- Execute immediately. No exploration, no alternatives.\n"
+            "- Pick the single best approach and implement it.\n"
+            "- Output only what was built. No preamble."
+        )
+
+    intensity_rule = (
+        "INTENSITY: HIGH — minimal output, direct execution only." if intensity >= 0.7
+        else "INTENSITY: MED — concise reasoning, focused output." if intensity >= 0.4
+        else "INTENSITY: LOW — verbose reasoning, exploratory tone."
+    )
+
+    depth_rule = (
+        "DEPTH: HIGH — deeper diagnostic reasoning allowed." if depth >= 0.7
+        else "DEPTH: MED — moderate analysis depth." if depth >= 0.4
+        else "DEPTH: LOW — surface-level reasoning only."
+    )
+
+    room_rule = (
+        "VOICE: OPEN — full resonance, thinks out loud." if room >= 0.7
+        else "VOICE: STUDIO — professional, measured, clean." if room >= 0.4
+        else "VOICE: DIRECT — dead room, output only, zero commentary."
+    )
+
+    return "\n".join([mode_rules, intensity_rule, depth_rule, room_rule])
+
+
+# ── API key management ─────────────────────────────────────────────────────────
+
+def load_keys() -> dict:
+    if KEYS_FILE.exists():
+        return json.loads(KEYS_FILE.read_text())
+    return {}
+
+def save_keys(keys: dict):
+    KEYS_FILE.write_text(json.dumps(keys, indent=2))
+
+def generate_key(org_id: str, team_id: str = None, member_id: str = None) -> str:
+    return "ag-" + secrets.token_hex(24)
+
+def resolve_policy(key_meta: dict, org: dict) -> dict:
+    """Return the effective behavioral policy for a given API key."""
+    team_id   = key_meta.get("team_id")
+    member_id = key_meta.get("member_id")
+
+    # Start with org defaults
+    policy = dict(org.get("policy", {}))
+
+    # Layer team policy on top
+    if team_id:
+        team = next((t for t in org.get("teams", []) if t["id"] == team_id), None)
+        if team:
+            policy.update(team.get("policy", {}))
+
+    # Layer individual overrides on top
+    if member_id:
+        member = next((m for m in org.get("members", []) if m["id"] == member_id), None)
+        if member:
+            if member.get("intensity") is not None:
+                policy["intensity"] = member["intensity"]
+            if member.get("depth") is not None:
+                policy["depth"] = member["depth"]
+
+    return policy
+
+
+# ── Usage logging ──────────────────────────────────────────────────────────────
+
+def log_usage(key_id: str, team_id: str, member_id: str, model: str,
+              input_tokens: int, output_tokens: int):
+    try:
+        log = json.loads(USAGE_FILE.read_text()) if USAGE_FILE.exists() else []
+        log.append({
+            "ts":           int(time.time()),
+            "key_id":       key_id,
+            "team_id":      team_id,
+            "member_id":    member_id,
+            "model":        model,
+            "input_tokens": input_tokens,
+            "output_tokens":output_tokens,
+        })
+        USAGE_FILE.write_text(json.dumps(log[-10000:]))  # keep last 10k entries
+    except Exception:
+        pass
 
 # ── Default org structure ──────────────────────────────────────────────────────
 
@@ -284,6 +394,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
   <button class="nav-btn" onclick="showPage('teams')">Teams</button>
   <button class="nav-btn" onclick="showPage('members')">Members</button>
   <button class="nav-btn" onclick="showPage('policy')">Policy</button>
+  <button class="nav-btn" onclick="showPage('keys')">API Keys</button>
 </nav>
 
 <div class="main">
@@ -359,6 +470,28 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     </table>
   </div>
 
+  <!-- ── API KEYS ── -->
+  <div id="page-keys" class="page">
+    <div class="sec-hdr">
+      <div class="sec-title">API Keys</div>
+      <button class="sec-action" onclick="openAddKey()">+ Generate Key</button>
+    </div>
+    <div style="background:var(--panel);border:1px solid rgba(0,221,212,.2);border-radius:6px;padding:16px 20px;margin-bottom:20px;border-left:3px solid var(--accent);">
+      <div style="font-size:10px;font-weight:800;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Drop-in Anthropic Replacement</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.7;">Replace <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">https://api.anthropic.com</code> with your AiGain endpoint. Pass your AiGain key via <code style="background:var(--panel2);padding:1px 5px;border-radius:2px;color:var(--accent);">x-aigain-key</code> header. Behavioral state is injected automatically based on the key's team assignment.</div>
+      <div style="margin-top:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:4px;padding:10px 14px;font-size:11px;font-family:monospace;color:#A78BFA;">
+        client = Anthropic(<br>
+        &nbsp;&nbsp;base_url=<span style="color:#34D399">"http://127.0.0.1:5571/v1"</span>,<br>
+        &nbsp;&nbsp;api_key=<span style="color:#34D399">"ag-your-key-here"</span>,<br>
+        )
+      </div>
+    </div>
+    <table class="members-table" id="keys-table">
+      <thead><tr><th>Label</th><th>Team</th><th>Key</th><th>Created</th><th>Status</th><th></th></tr></thead>
+      <tbody id="keys-tbody"></tbody>
+    </table>
+  </div>
+
   <!-- ── POLICY ── -->
   <div id="page-policy" class="page">
     <div class="sec-hdr"><div class="sec-title">Org-Wide Policy Rules</div></div>
@@ -387,6 +520,24 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('add-team-modal')">Cancel</button>
       <button class="btn primary" onclick="addTeam()">Create Team</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD KEY MODAL ── -->
+<div class="modal-overlay" id="add-key-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">Generate API Key</div>
+      <button class="modal-close" onclick="closeModal('add-key-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field"><div class="form-lbl">Label</div><input class="form-input" id="new-key-label" placeholder="e.g. Engineering Integration" maxlength="60"></div>
+      <div class="form-field"><div class="form-lbl">Team Assignment</div><select class="form-select" id="new-key-team"><option value="">— Org default —</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('add-key-modal')">Cancel</button>
+      <button class="btn primary" onclick="createKey()">Generate</button>
     </div>
   </div>
 </div>
@@ -843,12 +994,68 @@ function renderCharts(){
   });
 }
 
+// ── API Key management ─────────────────────────────────────────────────────────
+
+let KEYS = {};
+
+async function loadKeys(){
+  const r = await fetch('/api/keys');
+  KEYS = await r.json();
+  renderKeys();
+}
+
+function openAddKey(){
+  const sel = document.getElementById('new-key-team');
+  if(sel && ORG) sel.innerHTML = '<option value="">— Org default —</option>' + ORG.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+  document.getElementById('add-key-modal').classList.add('open');
+}
+
+async function createKey(){
+  const label   = document.getElementById('new-key-label').value.trim() || 'Unnamed key';
+  const team_id = document.getElementById('new-key-team').value || null;
+  const r = await fetch('/api/keys', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({label, team_id})});
+  const data = await r.json();
+  closeModal('add-key-modal');
+  document.getElementById('new-key-label').value = '';
+  alert('Key generated:\\n\\n' + data.key + '\\n\\nCopy this now — it will not be shown again.');
+  loadKeys();
+}
+
+async function revokeKey(keyId){
+  if(!confirm('Revoke this key? It will stop working immediately.')) return;
+  await fetch('/api/keys/'+keyId, {method:'DELETE'});
+  loadKeys();
+}
+
+function renderKeys(){
+  const teamMap = {};
+  if(ORG) ORG.teams.forEach(t=>teamMap[t.id]=t);
+  const tbody = document.getElementById('keys-tbody');
+  if(!tbody) return;
+  const entries = Object.entries(KEYS);
+  if(!entries.length){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">No keys yet. Generate one to get started.</td></tr>'; return; }
+  tbody.innerHTML = entries.map(([kid, k])=>{
+    const team = teamMap[k.team_id] || null;
+    const created = new Date(k.created*1000).toLocaleDateString();
+    const masked = k.key.slice(0,8) + '••••••••••••••••' + k.key.slice(-4);
+    return `<tr>
+      <td><div class="member-name">${k.label}</div></td>
+      <td>${team ? `<span class="member-team-tag" style="background:${team.color}22;color:${team.color};border:1px solid ${team.color}44">${team.name}</span>` : '<span style="color:var(--text3);font-size:10px;">Org default</span>'}</td>
+      <td><code style="font-size:10px;color:var(--text3);letter-spacing:.04em;">${masked}</code></td>
+      <td style="color:var(--text3);font-size:10px;">${created}</td>
+      <td><span style="font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;${k.active?'color:var(--green);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)':'color:var(--red);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3)'}">${k.active?'ACTIVE':'REVOKED'}</span></td>
+      <td>${k.active?`<button class="team-edit-btn" onclick="revokeKey('${kid}')" style="color:var(--red);border-color:rgba(248,113,113,.3);">Revoke</button>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+
 function togglePolicyEdit(){
   const body = document.getElementById('org-controls');
   if(body) body.style.display = body.style.display==='none' ? '' : 'none';
 }
 
 loadOrg();
+loadKeys();
 </script>
 </body>
 </html>"""
@@ -875,6 +1082,163 @@ def patch_org():
 @app.route('/health')
 def health():
     return jsonify({'ok': True, 'project': 'aigain'})
+
+
+# ── API key management routes ──────────────────────────────────────────────────
+
+@app.route('/api/keys', methods=['GET'])
+def list_keys():
+    return jsonify(load_keys())
+
+@app.route('/api/keys', methods=['POST'])
+def create_key():
+    data      = request.get_json() or {}
+    org       = load_org()
+    keys      = load_keys()
+    key_value = generate_key(org.get("id", "default"))
+    key_id    = "kid_" + uuid.uuid4().hex[:12]
+    keys[key_id] = {
+        "key":       key_value,
+        "label":     data.get("label", "Unnamed key"),
+        "team_id":   data.get("team_id"),
+        "member_id": data.get("member_id"),
+        "created":   int(time.time()),
+        "active":    True,
+    }
+    save_keys(keys)
+    return jsonify({"ok": True, "key_id": key_id, "key": key_value})
+
+@app.route('/api/keys/<key_id>', methods=['DELETE'])
+def revoke_key(key_id):
+    keys = load_keys()
+    if key_id in keys:
+        keys[key_id]["active"] = False
+        save_keys(keys)
+    return jsonify({"ok": True})
+
+@app.route('/api/usage', methods=['GET'])
+def get_usage():
+    try:
+        log = json.loads(USAGE_FILE.read_text()) if USAGE_FILE.exists() else []
+        return jsonify(log[-500:])
+    except Exception:
+        return jsonify([])
+
+
+# ── Proxy endpoint — drop-in Anthropic replacement ────────────────────────────
+#
+#   Companies point their SDK at:  http://your-aigain-host/v1/messages
+#   They pass their AiGain API key in x-aigain-key header (or Authorization)
+#   AiGain injects behavioral system prompt then forwards to Anthropic.
+
+@app.route('/v1/messages', methods=['POST'])
+def proxy_messages():
+    # ── Authenticate ──────────────────────────────────────────────────────────
+    ag_key = (
+        request.headers.get("x-aigain-key") or
+        request.headers.get("Authorization", "").removeprefix("Bearer ").strip()
+    )
+    keys = load_keys()
+    key_meta = next(
+        (v for v in keys.values() if v.get("key") == ag_key and v.get("active")),
+        None
+    )
+    if not key_meta and ag_key != os.environ.get("AIGAIN_MASTER_KEY", ""):
+        return jsonify({"error": "invalid_api_key", "message": "Provide a valid AiGain API key via x-aigain-key header."}), 401
+
+    # ── Resolve behavioral policy ──────────────────────────────────────────────
+    org    = load_org()
+    policy = resolve_policy(key_meta or {}, org)
+    behavioral_prompt = build_behavioral_prompt(policy)
+
+    # ── Modify request body — inject behavioral system prompt ─────────────────
+    body = request.get_json(force=True) or {}
+    existing_system = body.get("system", "")
+    if existing_system:
+        body["system"] = behavioral_prompt + "\n\n---\n\n" + existing_system
+    else:
+        body["system"] = behavioral_prompt
+
+    # ── Forward to Anthropic ───────────────────────────────────────────────────
+    if not ANTHROPIC_KEY:
+        return jsonify({"error": "no_upstream_key", "message": "ANTHROPIC_API_KEY not configured on AiGain server."}), 500
+
+    upstream_headers = {
+        "Content-Type":      "application/json",
+        "x-api-key":         ANTHROPIC_KEY,
+        "anthropic-version": request.headers.get("anthropic-version", "2023-06-01"),
+        "anthropic-beta":    request.headers.get("anthropic-beta", ""),
+    }
+    upstream_headers = {k: v for k, v in upstream_headers.items() if v}
+
+    payload = json.dumps(body).encode()
+    req     = urllib.request.Request(ANTHROPIC_URL, data=payload, headers=upstream_headers, method="POST")
+
+    is_stream = body.get("stream", False)
+
+    try:
+        resp = urllib.request.urlopen(req, timeout=120)
+
+        if is_stream:
+            def generate():
+                try:
+                    while True:
+                        chunk = resp.read(1024)
+                        if not chunk:
+                            break
+                        yield chunk
+                finally:
+                    resp.close()
+            return Response(
+                stream_with_context(generate()),
+                status=resp.status,
+                content_type=resp.headers.get("Content-Type", "text/event-stream"),
+                headers={"X-AiGain-Team": key_meta.get("team_id","") if key_meta else "",
+                         "X-AiGain-Mode": policy.get("mode",""),
+                         "Cache-Control": "no-cache",
+                         "X-Accel-Buffering": "no"},
+            )
+        else:
+            raw  = resp.read()
+            data = json.loads(raw)
+            # Log usage
+            usage = data.get("usage", {})
+            log_usage(
+                key_id    = next((k for k,v in keys.items() if v.get("key")==ag_key), "unknown"),
+                team_id   = key_meta.get("team_id","") if key_meta else "",
+                member_id = key_meta.get("member_id","") if key_meta else "",
+                model     = data.get("model",""),
+                input_tokens  = usage.get("input_tokens", 0),
+                output_tokens = usage.get("output_tokens", 0),
+            )
+            return jsonify(data), resp.status
+
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode()
+        try:    err_json = json.loads(err_body)
+        except: err_json = {"error": err_body}
+        return jsonify(err_json), e.code
+    except Exception as e:
+        return jsonify({"error": "proxy_error", "message": str(e)}), 502
+
+
+# ── Proxy test endpoint ────────────────────────────────────────────────────────
+
+@app.route('/v1/test', methods=['POST'])
+def test_proxy():
+    """Quick test: returns the behavioral prompt that would be injected."""
+    ag_key   = request.headers.get("x-aigain-key", "")
+    keys     = load_keys()
+    key_meta = next((v for v in keys.values() if v.get("key") == ag_key), None)
+    org      = load_org()
+    policy   = resolve_policy(key_meta or {}, org)
+    return jsonify({
+        "ok":               True,
+        "team_id":          key_meta.get("team_id") if key_meta else None,
+        "member_id":        key_meta.get("member_id") if key_meta else None,
+        "policy":           policy,
+        "behavioral_prompt": build_behavioral_prompt(policy),
+    })
 
 
 if __name__ == '__main__':
