@@ -476,10 +476,29 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .t1 .ag-fader-fill{background:linear-gradient(0deg,rgba(0,148,140,.94) 0%,rgba(0,200,192,.72) 40%,rgba(0,232,224,.46) 75%,rgba(100,255,250,.18) 100%);box-shadow:0 0 24px rgba(0,200,192,.4),0 0 60px rgba(0,180,175,.12),inset 0 0 32px rgba(0,160,155,.08);}
 .t2 .ag-fader-fill{background:linear-gradient(0deg,rgba(88,28,180,.94) 0%,rgba(120,64,224,.72) 40%,rgba(155,104,248,.46) 75%,rgba(210,185,255,.18) 100%);box-shadow:0 0 24px rgba(139,92,246,.4),0 0 60px rgba(139,92,246,.12),inset 0 0 32px rgba(100,58,200,.08);}
 .t3 .ag-fader-fill{background:linear-gradient(0deg,rgba(180,28,160,.94) 0%,rgba(217,70,200,.72) 40%,rgba(240,130,230,.46) 75%,rgba(255,200,248,.18) 100%);box-shadow:0 0 24px rgba(217,70,239,.4),0 0 60px rgba(217,70,239,.12),inset 0 0 32px rgba(180,40,200,.08);}
-.ag-fader-thumb{position:absolute;width:100%;height:4px;left:0;cursor:ns-resize;z-index:3;touch-action:none;border-radius:2px;pointer-events:none;}
-.t1 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(0,228,220,.6) 18%,rgba(190,255,252,.94) 50%,rgba(0,228,220,.6) 82%,transparent);box-shadow:0 0 12px rgba(0,220,212,1),0 0 28px rgba(0,200,192,.65);}
-.t2 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(158,128,250,.6) 18%,rgba(224,198,255,.94) 50%,rgba(158,128,250,.6) 82%,transparent);box-shadow:0 0 12px rgba(167,139,250,1),0 0 28px rgba(139,92,246,.65);}
-.t3 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(240,130,230,.6) 18%,rgba(255,210,252,.94) 50%,rgba(240,130,230,.6) 82%,transparent);box-shadow:0 0 12px rgba(240,171,255,1),0 0 28px rgba(217,70,239,.65);}
+.ag-fader-thumb{
+  position:absolute;width:calc(100% + 4px);height:28px;
+  left:-2px;transform:translateY(50%);
+  cursor:ns-resize;z-index:3;touch-action:none;
+  border-radius:4px;
+  background:linear-gradient(180deg,#1E2E3C 0%,#14202C 30%,#0C1620 55%,#121E2A 80%,#1A2A38 100%);
+  border-top:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(0,0,0,.9);
+  border-left:1px solid rgba(255,255,255,.06);
+  border-right:1px solid rgba(255,255,255,.06);
+  box-shadow:0 3px 10px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.06) inset,0 -1px 0 rgba(0,0,0,.6) inset;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.t1 .ag-fader-thumb{box-shadow:0 3px 10px rgba(0,0,0,.85),0 0 10px rgba(0,200,192,.2),0 1px 0 rgba(255,255,255,.06) inset,0 -1px 0 rgba(0,0,0,.6) inset;}
+.t2 .ag-fader-thumb{box-shadow:0 3px 10px rgba(0,0,0,.85),0 0 10px rgba(139,92,246,.2),0 1px 0 rgba(255,255,255,.06) inset,0 -1px 0 rgba(0,0,0,.6) inset;}
+.t3 .ag-fader-thumb{box-shadow:0 3px 10px rgba(0,0,0,.85),0 0 10px rgba(217,70,239,.2),0 1px 0 rgba(255,255,255,.06) inset,0 -1px 0 rgba(0,0,0,.6) inset;}
+.ag-fader-thumb::before,.ag-fader-thumb::after{content:'';display:block;width:55%;height:1px;position:absolute;left:50%;transform:translateX(-50%);}
+.ag-fader-thumb::before{top:8px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);}
+.ag-fader-thumb::after{bottom:8px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);}
+.t1 .ag-fader-thumb::before,.t1 .ag-fader-thumb::after{background:linear-gradient(90deg,transparent,rgba(0,220,212,.45),transparent);}
+.t2 .ag-fader-thumb::before,.t2 .ag-fader-thumb::after{background:linear-gradient(90deg,transparent,rgba(167,139,250,.45),transparent);}
+.t3 .ag-fader-thumb::before,.t3 .ag-fader-thumb::after{background:linear-gradient(90deg,transparent,rgba(240,171,255,.45),transparent);}
 .ag-fader-track.dragging .ag-fader-fill{transition:none;}
 .ctrl-dock.locked .ag-fader-track{cursor:not-allowed;opacity:.55;}
 .ctrl-dock.locked .ag-fader-thumb{opacity:.4;}
@@ -708,7 +727,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
       <div class="ag-fader-rail">
         <div class="ag-fader-track" id="dft-intensity">
           <div class="ag-fader-fill" id="dff-intensity"></div>
-          <div class="ag-fader-thumb" id="dfth-intensity"></div>
+          <div class="ag-fader-thumb" id="dfth-intensity"><div class="ag-thumb-grip"></div></div>
         </div>
       </div>
     </div>
@@ -724,7 +743,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
       <div class="ag-fader-rail">
         <div class="ag-fader-track" id="dft-depth">
           <div class="ag-fader-fill" id="dff-depth"></div>
-          <div class="ag-fader-thumb" id="dfth-depth"></div>
+          <div class="ag-fader-thumb" id="dfth-depth"><div class="ag-thumb-grip"></div></div>
         </div>
       </div>
     </div>
@@ -740,7 +759,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
       <div class="ag-fader-rail">
         <div class="ag-fader-track" id="dft-room">
           <div class="ag-fader-fill" id="dff-room"></div>
-          <div class="ag-fader-thumb" id="dfth-room"></div>
+          <div class="ag-fader-thumb" id="dfth-room"><div class="ag-thumb-grip"></div></div>
         </div>
       </div>
     </div>
@@ -1417,7 +1436,7 @@ loadKeys();
 
 const DOCK_FIELDS = ['intensity', 'depth', 'room'];
 const DOCK_CC = {0: 'intensity', 1: 'depth', 3: 'room'};
-const THUMB_H = 4;
+const THUMB_H = 14;
 let dockLocked = true;
 let dockCollapsed = true;
 let dockDragging = new Set();
@@ -1433,7 +1452,8 @@ function setDockFader(field, val) {
   const h = track.offsetHeight || 1;
   const pct = val * 100;
   fill.style.height  = pct + '%';
-  thumb.style.bottom = 'calc(' + pct + '% - ' + (THUMB_H/2) + 'px)';
+  const h = track.offsetHeight || 200;
+  thumb.style.bottom = (val * (h - THUMB_H * 2)) + 'px';
   if (valEl) valEl.textContent = val.toFixed(2);
 }
 
