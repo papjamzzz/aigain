@@ -250,7 +250,22 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
 /* ── EMPTY STATE ── */
 .empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:11px;}
+
+/* ── CHARTS ── */
+.chart-row{display:flex;gap:14px;margin-bottom:14px;}
+.chart-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-width:0;}
+.chart-wide{flex:3;}
+.chart-narrow{flex:1.4;}
+.chart-third{flex:1;}
+.chart-hdr{padding:14px 18px 10px;display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--border);}
+.chart-title{font-size:11px;font-weight:800;color:var(--text);letter-spacing:.01em;}
+.chart-sub{font-size:9px;color:var(--text3);margin-left:2px;}
+.chart-hdr-btn{margin-left:auto;height:24px;padding:0 10px;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .1s;}
+.chart-hdr-btn:hover{border-color:var(--accent);color:var(--accent);}
+.chart-body{padding:16px;height:200px;position:relative;}
+.chart-body-donut{height:200px;display:flex;align-items:center;justify-content:center;}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -276,19 +291,41 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
   <!-- ── DASHBOARD ── -->
   <div id="page-dashboard" class="page active">
     <div class="stats-bar" id="stats-bar"></div>
-    <div class="sec-hdr"><div class="sec-title">Org-Wide Behavioral Policy</div><div class="org-card-sub" id="org-policy-sub">Applied to all teams unless overridden</div></div>
-    <div class="org-card">
-      <div class="org-card-hdr">
-        <div class="org-card-title">Default Behavioral State</div>
-        <div class="org-card-sub">All 75 employees start here</div>
+    <div class="chart-row">
+      <div class="chart-card chart-wide">
+        <div class="chart-hdr"><div class="chart-title">Token Usage — 30 Day Trend</div><div class="chart-sub">Daily tokens consumed across all teams</div></div>
+        <div class="chart-body"><canvas id="chart-usage"></canvas></div>
       </div>
-      <div class="org-card-body" id="org-controls"></div>
+      <div class="chart-card chart-narrow">
+        <div class="chart-hdr"><div class="chart-title">Usage by Team</div><div class="chart-sub">Share of monthly tokens</div></div>
+        <div class="chart-body chart-body-donut"><canvas id="chart-donut"></canvas></div>
+      </div>
     </div>
-    <div class="sec-hdr"><div class="sec-title">Teams</div></div>
-    <div class="team-grid" id="team-grid-dashboard"></div>
-    <div class="activity-section">
-      <div class="sec-hdr"><div class="sec-title">Recent Activity</div></div>
-      <div class="activity-list" id="activity-list"></div>
+    <div class="chart-row">
+      <div class="chart-card chart-third">
+        <div class="chart-hdr"><div class="chart-title">Mode Distribution</div><div class="chart-sub">EXPLORE vs BUILD across teams</div></div>
+        <div class="chart-body"><canvas id="chart-mode"></canvas></div>
+      </div>
+      <div class="chart-card chart-third">
+        <div class="chart-hdr"><div class="chart-title">Intensity by Team</div><div class="chart-sub">Average throttle level per team</div></div>
+        <div class="chart-body"><canvas id="chart-intensity"></canvas></div>
+      </div>
+      <div class="chart-card chart-third">
+        <div class="chart-hdr"><div class="chart-title">Override Rate</div><div class="chart-sub">Individual vs inherited policy</div></div>
+        <div class="chart-body chart-body-donut"><canvas id="chart-override"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card" style="flex:1;">
+        <div class="chart-hdr"><div class="chart-title">Org-Wide Behavioral Policy</div><div class="chart-sub">Default state applied to all teams unless overridden</div><button class="chart-hdr-btn" onclick="togglePolicyEdit()">Edit</button></div>
+        <div class="org-card-body" id="org-controls" style="padding:16px 20px;"></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card" style="flex:1;">
+        <div class="chart-hdr"><div class="chart-title">Recent Activity</div><div class="chart-sub">Behavioral state changes across the org</div></div>
+        <div class="activity-list" id="activity-list"></div>
+      </div>
     </div>
   </div>
 
@@ -395,6 +432,7 @@ function render(){
   renderMembers();
   renderPolicy();
   renderActivity();
+  setTimeout(renderCharts, 50);
 }
 
 function renderActivity(){
@@ -672,6 +710,142 @@ async function addMember(){
   renderTeams();
   renderMembers();
   renderStats();
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+
+const CHART_DEFAULTS = {
+  color: '#D8EAF8',
+  grid: 'rgba(22,32,48,.8)',
+  tick: '#405870',
+};
+Chart.defaults.color = CHART_DEFAULTS.color;
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.font.size = 10;
+
+let _charts = {};
+
+function destroyChart(id){
+  if(_charts[id]){ _charts[id].destroy(); delete _charts[id]; }
+}
+
+function renderCharts(){
+  if(!ORG) return;
+
+  // ── 30-day usage line chart ───────────────────────────────────────────────
+  destroyChart('usage');
+  const days = Array.from({length:30},(_,i)=>{
+    const d = new Date(); d.setDate(d.getDate()-29+i);
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  });
+  const baseUsage = [2.1,2.4,1.8,3.1,3.8,2.9,3.4,4.1,3.7,4.8,4.2,5.1,4.6,5.8,5.2,6.1,5.7,6.8,6.2,7.1,6.5,7.8,7.2,8.1,7.6,8.8,8.2,9.1,8.5,9.6].map(v=>v*1000000);
+  const ctx1 = document.getElementById('chart-usage');
+  if(ctx1) _charts['usage'] = new Chart(ctx1, {
+    type:'line',
+    data:{
+      labels: days,
+      datasets:[
+        {label:'All Teams', data:baseUsage, borderColor:'#00DDD4', backgroundColor:'rgba(0,221,212,.06)', fill:true, tension:.4, pointRadius:0, pointHoverRadius:4, borderWidth:2},
+        {label:'Engineering', data:baseUsage.map(v=>v*.18), borderColor:'#00DDD4', backgroundColor:'transparent', fill:false, tension:.4, pointRadius:0, borderWidth:1, borderDash:[4,4]},
+        {label:'Support', data:baseUsage.map(v=>v*.28), borderColor:'#A78BFA', backgroundColor:'transparent', fill:false, tension:.4, pointRadius:0, borderWidth:1, borderDash:[4,4]},
+        {label:'Research', data:baseUsage.map(v=>v*.10), borderColor:'#F59E0B', backgroundColor:'transparent', fill:false, tension:.4, pointRadius:0, borderWidth:1, borderDash:[4,4]},
+        {label:'Sales', data:baseUsage.map(v=>v*.40), borderColor:'#34D399', backgroundColor:'transparent', fill:false, tension:.4, pointRadius:0, borderWidth:1, borderDash:[4,4]},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{legend:{display:true, position:'top', labels:{boxWidth:8, padding:16, font:{size:9,weight:'700'}}}, tooltip:{backgroundColor:'#0B1018', borderColor:'#1E2E40', borderWidth:1, padding:10, titleFont:{size:10}, bodyFont:{size:10}}},
+      scales:{
+        x:{grid:{color:CHART_DEFAULTS.grid}, ticks:{color:CHART_DEFAULTS.tick, maxTicksLimit:8}},
+        y:{grid:{color:CHART_DEFAULTS.grid}, ticks:{color:CHART_DEFAULTS.tick, callback:v=>fmtTokens(v)}}
+      }
+    }
+  });
+
+  // ── Team usage donut ──────────────────────────────────────────────────────
+  destroyChart('donut');
+  const ctx2 = document.getElementById('chart-donut');
+  if(ctx2) _charts['donut'] = new Chart(ctx2, {
+    type:'doughnut',
+    data:{
+      labels: ORG.teams.map(t=>t.name),
+      datasets:[{data: ORG.teams.map(t=>t.members), backgroundColor: ORG.teams.map(t=>t.color+'CC'), borderColor: ORG.teams.map(t=>t.color), borderWidth:1.5}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'68%',
+      plugins:{legend:{position:'bottom', labels:{boxWidth:8, padding:10, font:{size:9,weight:'700'}}}, tooltip:{backgroundColor:'#0B1018', borderColor:'#1E2E40', borderWidth:1, padding:10}}
+    }
+  });
+
+  // ── Mode distribution bar ─────────────────────────────────────────────────
+  destroyChart('mode');
+  const ctx3 = document.getElementById('chart-mode');
+  if(ctx3) _charts['mode'] = new Chart(ctx3, {
+    type:'bar',
+    data:{
+      labels: ORG.teams.map(t=>t.name),
+      datasets:[
+        {label:'EXPLORE', data: ORG.teams.map(t=>t.policy.mode==='EXPLORE'?t.members:Math.round(t.members*.35)), backgroundColor:'rgba(167,139,250,.7)', borderColor:'#A78BFA', borderWidth:1},
+        {label:'BUILD',   data: ORG.teams.map(t=>t.policy.mode==='BUILD'?t.members:Math.round(t.members*.65)), backgroundColor:'rgba(0,221,212,.7)', borderColor:'#00DDD4', borderWidth:1},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top', labels:{boxWidth:8, padding:12, font:{size:9,weight:'700'}}}, tooltip:{backgroundColor:'#0B1018', borderColor:'#1E2E40', borderWidth:1, padding:10}},
+      scales:{
+        x:{stacked:true, grid:{color:CHART_DEFAULTS.grid}, ticks:{color:CHART_DEFAULTS.tick}},
+        y:{stacked:true, grid:{color:CHART_DEFAULTS.grid}, ticks:{color:CHART_DEFAULTS.tick}}
+      }
+    }
+  });
+
+  // ── Intensity by team bar ─────────────────────────────────────────────────
+  destroyChart('intensity');
+  const ctx4 = document.getElementById('chart-intensity');
+  if(ctx4) _charts['intensity'] = new Chart(ctx4, {
+    type:'bar',
+    data:{
+      labels: ORG.teams.map(t=>t.name),
+      datasets:[{
+        label:'Avg Intensity',
+        data: ORG.teams.map(t=>t.policy.intensity),
+        backgroundColor: ORG.teams.map(t=>t.color+'99'),
+        borderColor: ORG.teams.map(t=>t.color),
+        borderWidth:1.5, borderRadius:3,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{legend:{display:false}, tooltip:{backgroundColor:'#0B1018', borderColor:'#1E2E40', borderWidth:1, padding:10, callbacks:{label:ctx=>'Intensity: '+ctx.raw.toFixed(2)}}},
+      scales:{
+        x:{min:0, max:1, grid:{color:CHART_DEFAULTS.grid}, ticks:{color:CHART_DEFAULTS.tick, callback:v=>v.toFixed(1)}},
+        y:{grid:{display:false}, ticks:{color:CHART_DEFAULTS.tick}}
+      }
+    }
+  });
+
+  // ── Override rate donut ───────────────────────────────────────────────────
+  destroyChart('override');
+  const overrideCount = ORG.members.filter(m=>m.intensity!=null||m.depth!=null).length;
+  const inheritCount  = ORG.members.length - overrideCount;
+  const ctx5 = document.getElementById('chart-override');
+  if(ctx5) _charts['override'] = new Chart(ctx5, {
+    type:'doughnut',
+    data:{
+      labels:['Inherited','Override'],
+      datasets:[{data:[inheritCount, overrideCount], backgroundColor:['rgba(0,221,212,.2)','rgba(245,158,11,.7)'], borderColor:['#00DDD4','#F59E0B'], borderWidth:1.5}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'72%',
+      plugins:{legend:{position:'bottom', labels:{boxWidth:8, padding:10, font:{size:9,weight:'700'}}}, tooltip:{backgroundColor:'#0B1018', borderColor:'#1E2E40', borderWidth:1, padding:10}}
+    }
+  });
+}
+
+function togglePolicyEdit(){
+  const body = document.getElementById('org-controls');
+  if(body) body.style.display = body.style.display==='none' ? '' : 'none';
 }
 
 loadOrg();
