@@ -41,15 +41,26 @@ cd ~/aigain && make run
 - Push: `make m="your message" push`
 
 ## What's Done
-- [x] Project scaffold created
+- [x] Project scaffold + full Flask app built
+- [x] Three-tier hierarchy: Org → Team → Individual
+- [x] Dashboard with usage stats, team cards, members table, policy limits
+- [x] Persistent JSON storage (data/org.json)
+- [x] GitHub repo live: papjamzzz/aigain
 
 ## What's Next
-- [ ] Define core functionality
-- [ ] Add logo to static/
-- [ ] Wire up first route/feature
+- [ ] Real API routing — behavioral state applied to actual Claude calls
+- [ ] Auth layer (admin vs team lead vs member)
+- [ ] Usage tracking per team/member (real token counts)
+- [ ] Railway deployment
+- [ ] Stripe billing
 
 ## Key Technical Decisions
-- localhost only (host=127.0.0.1)
+- Single-file Flask app (HTML as string, like Gain)
+- Data stored in data/org.json — simple, no DB needed for MVP
+- Built on Gain's behavioral state model — same 4 parameters
+
+## Last Session
+2026-06-04 — Initial build. Full enterprise UI: org/team/individual throttle hierarchy, dashboard, teams, members, policy pages. Dark theme, Gain aesthetic. Persistent JSON. GitHub live.
 
 ---
 *Last updated: 2026-06-04*
