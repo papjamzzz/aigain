@@ -14,9 +14,8 @@ USAGE_FILE = DATA_DIR / "usage_log.json"
 DATA_DIR.mkdir(exist_ok=True)
 
 # ── Live fader state ──────────────────────────────────────────────────────────
-STATE_DIR  = Path.home() / ".aigain"
-STATE_FILE = STATE_DIR / "state.json"
-STATE_DIR.mkdir(exist_ok=True)
+STATE_DIR  = DATA_DIR  # use data/ — works on Railway and local
+STATE_FILE = STATE_DIR / "fader_state.json"
 
 DEFAULT_FADER_STATE = {"intensity": 0.6, "depth": 0.5, "room": 0.4, "mode": "BUILD"}
 
