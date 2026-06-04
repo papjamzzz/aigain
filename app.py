@@ -13,6 +13,30 @@ KEYS_FILE  = DATA_DIR / "api_keys.json"
 USAGE_FILE = DATA_DIR / "usage_log.json"
 DATA_DIR.mkdir(exist_ok=True)
 
+# ── Live fader state ──────────────────────────────────────────────────────────
+STATE_DIR  = Path.home() / ".aigain"
+STATE_FILE = STATE_DIR / "state.json"
+STATE_DIR.mkdir(exist_ok=True)
+
+DEFAULT_FADER_STATE = {"intensity": 0.6, "depth": 0.5, "room": 0.4, "mode": "BUILD"}
+
+def read_fader_state() -> dict:
+    try:
+        return json.loads(STATE_FILE.read_text())
+    except Exception:
+        return dict(DEFAULT_FADER_STATE)
+
+def write_fader_state(s: dict):
+    STATE_FILE.write_text(json.dumps(s))
+
+_sse_clients: list = []
+
+def broadcast(data: dict):
+    msg = f"data: {json.dumps(data)}\n\n"
+    for q in list(_sse_clients):
+        try: q.append(msg)
+        except Exception: pass
+
 ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
@@ -1425,10 +1449,16 @@ function dockSave() {
   clearTimeout(dockSaveTimer);
   dockSaveTimer = setTimeout(() => {
     if (!window.ORG) return;
-    patch({policy: ORG.policy});
+    const s = {
+      intensity: ORG.policy.intensity,
+      depth:     ORG.policy.depth,
+      room:      ORG.policy.room,
+      mode:      ORG.policy.mode,
+    };
+    fetch('/set', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(s)});
     renderOrgControls();
     renderStats();
-  }, 300);
+  }, 80);
 }
 
 function toggleDock() {
@@ -1533,6 +1563,25 @@ function toggleDockLock() {
 
 // Body padding so content doesn't hide behind dock
 document.body.style.paddingBottom = '44px';
+
+// SSE — sync faders from server (MIDI bridge, other sessions)
+(function initStream() {
+  const es = new EventSource('/stream');
+  es.onmessage = function(e) {
+    const s = JSON.parse(e.data);
+    if (!window.ORG) return;
+    ['intensity','depth','room'].forEach(f => {
+      if (s[f] == null) return;
+      ORG.policy[f] = s[f];
+      if (!dockDragging.has(f)) setDockFader(f, s[f]);
+    });
+    if (s.mode) {
+      ORG.policy.mode = s.mode;
+      const el = document.getElementById('dock-mode-tag');
+      if (el) el.textContent = s.mode;
+    }
+  };
+})();
 </script>
 </body>
 </html>"""
@@ -1722,6 +1771,38 @@ def test_proxy():
         "behavioral_prompt": build_behavioral_prompt(policy),
     })
 
+
+@app.route('/stream')
+def stream():
+    q: list = []
+    _sse_clients.append(q)
+    state = read_fader_state()
+    q.append(f"data: {json.dumps(state)}\n\n")
+    def generate():
+        try:
+            while True:
+                if q:
+                    yield q.pop(0)
+                else:
+                    yield ": keep-alive\n\n"
+                time.sleep(0.05)
+        except GeneratorExit:
+            _sse_clients.remove(q) if q in _sse_clients else None
+    return Response(stream_with_context(generate()),
+                    content_type="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+@app.route('/set', methods=['POST'])
+def set_state():
+    data  = request.get_json() or {}
+    state = read_fader_state()
+    state.update({k: v for k, v in data.items() if k in ("intensity", "depth", "room", "mode")})
+    write_fader_state(state)
+    broadcast(state)
+    org = load_org()
+    org["policy"].update(state)
+    save_org(org)
+    return jsonify({"ok": True, "state": state})
 
 if __name__ == '__main__':
     ensure_team_keys()
