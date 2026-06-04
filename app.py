@@ -415,6 +415,55 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .faq-tag.build{color:var(--accent);background:rgba(0,221,212,.1);border:1px solid rgba(0,221,212,.25);}
 .faq-tag.explore{color:var(--purple2);background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);}
 
+/* ── CTRL DOCK ── */
+.ctrl-dock{position:fixed;bottom:0;left:0;right:0;z-index:150;background:linear-gradient(180deg,rgba(3,5,9,.97) 0%,#020407 100%);border-top:2px solid rgba(0,221,212,.18);backdrop-filter:blur(24px);display:flex;flex-direction:column;height:46vh;transition:height .3s cubic-bezier(.4,0,.2,1);}
+.ctrl-dock.collapsed{height:44px;}
+.ctrl-dock-hdr{height:44px;flex-shrink:0;display:flex;align-items:center;padding:0 20px;gap:12px;border-bottom:1px solid rgba(0,221,212,.1);cursor:pointer;user-select:none;}
+.ctrl-dock-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,221,212,.4),rgba(217,70,239,.2),transparent);}
+.dock-title{font-size:8px;font-weight:900;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,221,212,.6);}
+.dock-mode-tag{font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:2px;border:1px solid rgba(0,221,212,.3);color:var(--accent);background:rgba(0,221,212,.06);}
+.dock-midi-tag{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border:1px solid var(--border);padding:2px 8px;border-radius:2px;transition:all .2s;}
+.dock-midi-tag.active{color:#34D399;border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08);}
+.dock-lock-btn{margin-left:auto;height:26px;padding:0 12px;border-radius:2px;border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.06);color:#F59E0B;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.dock-lock-btn.unlocked{border-color:rgba(0,221,212,.4);background:rgba(0,221,212,.07);color:var(--accent);}
+.dock-lock-btn:hover{opacity:.8;}
+.dock-collapse-btn{width:26px;height:26px;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0;}
+.dock-collapse-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ctrl-dock-body{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;min-height:0;overflow:hidden;}
+.ctrl-dock.collapsed .ctrl-dock-body{opacity:0;pointer-events:none;}
+.ag-ch{display:flex;flex-direction:column;padding:16px 20px 12px;border-right:1px solid var(--border);position:relative;}
+.ag-ch:last-child{border-right:none;}
+.ag-ch-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;flex-shrink:0;}
+.ag-ch-lbl{font-size:9px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;}
+.ag-ch-sub{font-size:8px;font-weight:600;letter-spacing:.06em;color:var(--text3);}
+.ag-ch-val{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;font-family:'Inter',sans-serif;line-height:1;letter-spacing:-.02em;}
+.t1 .ag-ch-lbl{color:var(--accent);}
+.t2 .ag-ch-lbl{color:var(--purple2);}
+.t3 .ag-ch-lbl{color:var(--magenta2);}
+.t1 .ag-ch-val{color:var(--accent);text-shadow:0 0 20px rgba(0,221,212,.4);}
+.t2 .ag-ch-val{color:var(--purple2);text-shadow:0 0 20px rgba(167,139,250,.4);}
+.t3 .ag-ch-val{color:var(--magenta2);text-shadow:0 0 20px rgba(240,171,255,.4);}
+.ag-fader-rail{flex:1;display:flex;justify-content:center;min-height:0;padding:4px 0;}
+.ag-fader-track{width:calc(100% - 16px);height:100%;background:rgba(2,6,14,.94);border-radius:5px;position:relative;cursor:ns-resize;touch-action:none;overflow:hidden;transition:box-shadow .15s;}
+.t1 .ag-fader-track{border:1px solid rgba(0,180,172,.22);box-shadow:inset 0 0 0 1px rgba(0,180,172,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
+.t2 .ag-fader-track{border:1px solid rgba(139,92,246,.22);box-shadow:inset 0 0 0 1px rgba(139,92,246,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
+.t3 .ag-fader-track{border:1px solid rgba(217,70,239,.22);box-shadow:inset 0 0 0 1px rgba(217,70,239,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
+.ag-fader-fill{position:absolute;bottom:0;left:0;right:0;pointer-events:none;transition:height .04s linear;}
+.t1 .ag-fader-fill{background:linear-gradient(0deg,rgba(0,148,140,.94) 0%,rgba(0,200,192,.72) 40%,rgba(0,232,224,.46) 75%,rgba(100,255,250,.18) 100%);box-shadow:0 0 24px rgba(0,200,192,.4),0 0 60px rgba(0,180,175,.12),inset 0 0 32px rgba(0,160,155,.08);}
+.t2 .ag-fader-fill{background:linear-gradient(0deg,rgba(88,28,180,.94) 0%,rgba(120,64,224,.72) 40%,rgba(155,104,248,.46) 75%,rgba(210,185,255,.18) 100%);box-shadow:0 0 24px rgba(139,92,246,.4),0 0 60px rgba(139,92,246,.12),inset 0 0 32px rgba(100,58,200,.08);}
+.t3 .ag-fader-fill{background:linear-gradient(0deg,rgba(180,28,160,.94) 0%,rgba(217,70,200,.72) 40%,rgba(240,130,230,.46) 75%,rgba(255,200,248,.18) 100%);box-shadow:0 0 24px rgba(217,70,239,.4),0 0 60px rgba(217,70,239,.12),inset 0 0 32px rgba(180,40,200,.08);}
+.ag-fader-thumb{position:absolute;width:100%;height:4px;left:0;cursor:ns-resize;z-index:3;touch-action:none;border-radius:2px;pointer-events:none;}
+.t1 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(0,228,220,.6) 18%,rgba(190,255,252,.94) 50%,rgba(0,228,220,.6) 82%,transparent);box-shadow:0 0 12px rgba(0,220,212,1),0 0 28px rgba(0,200,192,.65);}
+.t2 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(158,128,250,.6) 18%,rgba(224,198,255,.94) 50%,rgba(158,128,250,.6) 82%,transparent);box-shadow:0 0 12px rgba(167,139,250,1),0 0 28px rgba(139,92,246,.65);}
+.t3 .ag-fader-thumb{background:linear-gradient(90deg,transparent,rgba(240,130,230,.6) 18%,rgba(255,210,252,.94) 50%,rgba(240,130,230,.6) 82%,transparent);box-shadow:0 0 12px rgba(240,171,255,1),0 0 28px rgba(217,70,239,.65);}
+.ag-fader-track.dragging .ag-fader-fill{transition:none;}
+.ctrl-dock.locked .ag-fader-track{cursor:not-allowed;opacity:.55;}
+.ctrl-dock.locked .ag-fader-thumb{opacity:.4;}
+.ag-ch-accent{position:absolute;top:0;left:0;right:0;height:2px;}
+.t1 .ag-ch-accent{background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 8px rgba(0,221,212,.5);}
+.t2 .ag-ch-accent{background:linear-gradient(90deg,transparent,var(--purple2),transparent);box-shadow:0 0 8px rgba(139,92,246,.5);}
+.t3 .ag-ch-accent{background:linear-gradient(90deg,transparent,var(--magenta2),transparent);box-shadow:0 0 8px rgba(217,70,239,.5);}
+
 /* ── CHARTS ── */
 .chart-row{display:flex;gap:14px;margin-bottom:14px;}
 .chart-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-width:0;}
@@ -613,6 +662,67 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 </div>
 
 <!-- ── ADD TEAM MODAL ── -->
+<!-- ── CTRL DOCK ── -->
+<div class="ctrl-dock locked collapsed" id="ctrl-dock">
+  <div class="ctrl-dock-hdr" onclick="handleDockHdrClick(event)">
+    <div class="dock-title">Org Policy Control</div>
+    <div class="dock-mode-tag" id="dock-mode-tag">BUILD</div>
+    <div class="dock-midi-tag" id="dock-midi-tag">MIDI —</div>
+    <button class="dock-lock-btn" id="dock-lock-btn" onclick="event.stopPropagation();toggleDockLock()">⚷ LOCKED</button>
+    <button class="dock-collapse-btn" id="dock-collapse-btn" onclick="event.stopPropagation();toggleDock()">▲</button>
+  </div>
+  <div class="ctrl-dock-body">
+    <div class="ag-ch t1">
+      <div class="ag-ch-accent"></div>
+      <div class="ag-ch-hdr">
+        <div>
+          <div class="ag-ch-lbl">Intensity</div>
+          <div class="ag-ch-sub">Drive · Effort</div>
+        </div>
+        <div class="ag-ch-val" id="dock-val-intensity">0.60</div>
+      </div>
+      <div class="ag-fader-rail">
+        <div class="ag-fader-track" id="dft-intensity">
+          <div class="ag-fader-fill" id="dff-intensity"></div>
+          <div class="ag-fader-thumb" id="dfth-intensity"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ag-ch t2">
+      <div class="ag-ch-accent"></div>
+      <div class="ag-ch-hdr">
+        <div>
+          <div class="ag-ch-lbl">Depth</div>
+          <div class="ag-ch-sub">Reasoning · Thinking</div>
+        </div>
+        <div class="ag-ch-val" id="dock-val-depth">0.50</div>
+      </div>
+      <div class="ag-fader-rail">
+        <div class="ag-fader-track" id="dft-depth">
+          <div class="ag-fader-fill" id="dff-depth"></div>
+          <div class="ag-fader-thumb" id="dfth-depth"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ag-ch t3">
+      <div class="ag-ch-accent"></div>
+      <div class="ag-ch-hdr">
+        <div>
+          <div class="ag-ch-lbl">Verbosity</div>
+          <div class="ag-ch-sub">Room · Voice</div>
+        </div>
+        <div class="ag-ch-val" id="dock-val-room">0.40</div>
+      </div>
+      <div class="ag-fader-rail">
+        <div class="ag-fader-track" id="dft-room">
+          <div class="ag-fader-fill" id="dff-room"></div>
+          <div class="ag-fader-thumb" id="dfth-room"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="add-team-modal">
   <div class="modal">
     <div class="modal-hdr">
@@ -763,6 +873,7 @@ async function loadOrg(){
   const r = await fetch('/api/org');
   ORG = await r.json();
   render();
+  updateDockFromOrg();
 }
 
 function fmt(v){ return v != null ? v.toFixed(2) : '—'; }
@@ -1277,6 +1388,151 @@ function togglePolicyEdit(){
 
 loadOrg();
 loadKeys();
+
+// ── CTRL DOCK ────────────────────────────────────────────────────────────────
+
+const DOCK_FIELDS = ['intensity', 'depth', 'room'];
+const DOCK_CC = {0: 'intensity', 1: 'depth', 3: 'room'};
+const THUMB_H = 4;
+let dockLocked = true;
+let dockCollapsed = true;
+let dockDragging = new Set();
+let dockSaveTimer = null;
+
+function setDockFader(field, val) {
+  val = Math.max(0, Math.min(1, val));
+  const track = document.getElementById('dft-' + field);
+  const fill  = document.getElementById('dff-' + field);
+  const thumb = document.getElementById('dfth-' + field);
+  const valEl = document.getElementById('dock-val-' + field);
+  if (!track || !fill || !thumb) return;
+  const h = track.offsetHeight || 1;
+  const pct = val * 100;
+  fill.style.height  = pct + '%';
+  thumb.style.bottom = 'calc(' + pct + '% - ' + (THUMB_H/2) + 'px)';
+  if (valEl) valEl.textContent = val.toFixed(2);
+}
+
+function updateDockFromOrg() {
+  if (!window.ORG) return;
+  const p = ORG.policy || {};
+  DOCK_FIELDS.forEach(f => setDockFader(f, p[f] || 0));
+  const modeEl = document.getElementById('dock-mode-tag');
+  if (modeEl) modeEl.textContent = p.mode || 'BUILD';
+}
+
+function dockSave() {
+  clearTimeout(dockSaveTimer);
+  dockSaveTimer = setTimeout(() => {
+    if (!window.ORG) return;
+    patch({policy: ORG.policy});
+    renderOrgControls();
+    renderStats();
+  }, 300);
+}
+
+function toggleDock() {
+  dockCollapsed = !dockCollapsed;
+  const dock = document.getElementById('ctrl-dock');
+  const btn  = document.getElementById('dock-collapse-btn');
+  dock.classList.toggle('collapsed', dockCollapsed);
+  if (btn) btn.textContent = dockCollapsed ? '▲' : '▼';
+  document.body.style.paddingBottom = dockCollapsed ? '44px' : '46vh';
+  if (!dockCollapsed) {
+    requestAnimationFrame(() => DOCK_FIELDS.forEach(f => {
+      const p = (ORG && ORG.policy) ? ORG.policy : {};
+      setDockFader(f, p[f] || 0);
+    }));
+  }
+}
+
+function handleDockHdrClick(e) {
+  if (e.target.closest('.dock-lock-btn') || e.target.closest('.dock-collapse-btn')) return;
+  toggleDock();
+}
+
+function toggleDockLock() {
+  dockLocked = !dockLocked;
+  const dock = document.getElementById('ctrl-dock');
+  const btn  = document.getElementById('dock-lock-btn');
+  dock.classList.toggle('locked', dockLocked);
+  if (btn) { btn.textContent = dockLocked ? '⚷ LOCKED' : '⚷ UNLOCKED'; btn.classList.toggle('unlocked', !dockLocked); }
+  if (!dockLocked && dockCollapsed) toggleDock();
+}
+
+// Pointer drag handlers
+(function initDockFaders() {
+  DOCK_FIELDS.forEach(field => {
+    const track = document.getElementById('dft-' + field);
+    if (!track) return;
+    function onDown(e) {
+      if (dockLocked) return;
+      e.preventDefault(); e.stopPropagation();
+      try { track.setPointerCapture(e.pointerId); } catch(_) {}
+      dockDragging.add(field);
+      track.classList.add('dragging');
+      const p = (ORG && ORG.policy) ? ORG.policy : {};
+      let cur = p[field] || 0;
+      let prevY = e.clientY;
+      function onMove(ev) {
+        const r = Math.max(20, track.offsetHeight);
+        const fine = ev.shiftKey ? 0.2 : 1;
+        cur = Math.max(0, Math.min(1, cur + (-(ev.clientY - prevY) / r) * fine));
+        prevY = ev.clientY;
+        setDockFader(field, cur);
+        if (ORG && ORG.policy) ORG.policy[field] = Math.round(cur * 1000) / 1000;
+        dockSave();
+      }
+      function onUp() {
+        dockDragging.delete(field);
+        track.classList.remove('dragging');
+        track.removeEventListener('pointermove', onMove);
+        track.removeEventListener('pointerup', onUp);
+        track.removeEventListener('pointercancel', onUp);
+      }
+      track.addEventListener('pointermove', onMove);
+      track.addEventListener('pointerup', onUp);
+      track.addEventListener('pointercancel', onUp);
+    }
+    track.addEventListener('pointerdown', onDown);
+    track.addEventListener('dblclick', () => {
+      if (dockLocked) return;
+      if (ORG && ORG.policy) ORG.policy[field] = 0.5;
+      setDockFader(field, 0.5);
+      dockSave();
+    });
+  });
+})();
+
+// WebMidi
+(function initMidi() {
+  if (!navigator.requestMIDIAccess) return;
+  navigator.requestMIDIAccess().then(midi => {
+    const tag = document.getElementById('dock-midi-tag');
+    function connectInputs() {
+      let connected = false;
+      for (const input of midi.inputs.values()) {
+        connected = true;
+        input.onmidimessage = function(e) {
+          const [status, cc, rawVal] = e.data;
+          if ((status & 0xF0) !== 0xB0) return;
+          const field = DOCK_CC[cc];
+          if (!field) return;
+          const val = rawVal / 127;
+          if (ORG && ORG.policy) ORG.policy[field] = Math.round(val * 1000) / 1000;
+          setDockFader(field, val);
+          dockSave();
+        };
+      }
+      if (tag) { tag.textContent = connected ? 'MIDI ●' : 'MIDI —'; tag.classList.toggle('active', connected); }
+    }
+    connectInputs();
+    midi.onstatechange = connectInputs;
+  }).catch(() => {});
+})();
+
+// Body padding so content doesn't hide behind dock
+document.body.style.paddingBottom = '44px';
 </script>
 </body>
 </html>"""
