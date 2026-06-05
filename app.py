@@ -2032,8 +2032,11 @@ def proxy_messages():
 
     # ── Modify request body — inject behavioral system prompt ─────────────────
     body = request.get_json(force=True) or {}
-    existing_system = body.get("system", "")
-    if existing_system:
+    existing_system = body.get("system")
+    if isinstance(existing_system, list):
+        # System is an array of blocks (e.g. Claude Code with cache_control)
+        body["system"] = [{"type": "text", "text": behavioral_prompt}] + existing_system
+    elif existing_system:
         body["system"] = behavioral_prompt + "\n\n---\n\n" + existing_system
     else:
         body["system"] = behavioral_prompt
