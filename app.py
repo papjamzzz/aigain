@@ -1825,6 +1825,7 @@ function toggleDockLock() {
   dock.classList.toggle('locked', dockLocked);
   if (btn) { btn.textContent = dockLocked ? '⚷ LOCKED' : '⚷ UNLOCKED'; btn.classList.toggle('unlocked', !dockLocked); }
   if (!dockLocked && dockCollapsed) toggleDock();
+  if (!dockLocked && !window._streamInited) { window._streamInited = true; initStream(); }
 }
 
 // Pointer drag handlers
@@ -1902,7 +1903,8 @@ function toggleDockLock() {
 document.body.style.paddingBottom = '44px';
 
 // SSE — sync faders from server (MIDI bridge, other sessions)
-(function initStream() {
+// Only connect when dock is unlocked to avoid blocking single-threaded servers
+function initStream() {
   const es = new EventSource('/stream');
   es.onmessage = function(e) {
     const s = JSON.parse(e.data);
@@ -1918,7 +1920,7 @@ document.body.style.paddingBottom = '44px';
       if (el) el.textContent = s.mode;
     }
   };
-})();
+}
 </script>
 </body>
 </html>"""
@@ -2295,4 +2297,4 @@ if __name__ == '__main__':
     print('│  http://127.0.0.1:5571               │')
     print('└─────────────────────────────────────┘\n')
     port = int(os.environ.get("PORT", 5571))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
