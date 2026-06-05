@@ -966,6 +966,66 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
       <strong>Estimated savings</strong> — tokens saved by throttling teams that don't need max intensity.</p>
     </div>
 
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">The Three Controls</div>
+      <p class="faq-p">Every policy has three faders. These are not model parameters — they rewrite how the AI thinks at the system level.</p>
+      <div class="faq-track" style="border-left-color:var(--accent);">
+        <div class="faq-track-name" style="color:var(--accent);">Intensity — Drive · Effort</div>
+        <div class="faq-track-desc">How hard Claude pushes. High intensity means direct, terse, decisive output. Low intensity means exploratory, tentative, shows reasoning steps. Most teams want 0.6–0.8 for production work.</div>
+      </div>
+      <div class="faq-track" style="border-left-color:var(--purple2);">
+        <div class="faq-track-name" style="color:var(--purple2);">Depth — Reasoning · Thinking</div>
+        <div class="faq-track-desc">How deeply Claude analyzes before responding. High depth surfaces trade-offs, edge cases, and second-order effects. Low depth prioritizes speed and directness. Research teams: 0.8+. Support teams: 0.3–0.5.</div>
+      </div>
+      <div class="faq-track" style="border-left-color:var(--magenta2);">
+        <div class="faq-track-name" style="color:var(--magenta2);">Verbosity — Room · Voice</div>
+        <div class="faq-track-desc">How much space Claude takes up. High verbosity means full explanations, context, and commentary. Low verbosity means output only — dead room. Engineering teams ship better with verbosity at 0.2–0.4.</div>
+      </div>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">The Compare Engine</div>
+      <p class="faq-p">Run the same prompt through two different team policies simultaneously. AiGain scores both outputs across 6 metrics and tells you which behavioral configuration won — and why.</p>
+      <p class="faq-p">Metrics: <strong>Adherence, Depth, Clarity, Efficiency, Confidence, Token Efficiency.</strong> Each scored 0–100. A plain-English summary explains the behavioral difference.</p>
+      <p class="faq-p">Every run is stored. The Stats view builds a permanent record of which teams' behavioral states produce the best outputs for different task types.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">Integration — 60 Seconds</div>
+      <p class="faq-p">Step 1: Create a team in AiGain. Get an API key.</p>
+      <p class="faq-p">Step 2: Point your SDK at AiGain instead of Anthropic.</p>
+      <code class="faq-code">client = anthropic.Anthropic(<br>
+&nbsp;&nbsp;api_key="your-aigain-team-key",<br>
+&nbsp;&nbsp;base_url="https://aigain.creativekonsoles.com/v1"<br>
+)</code>
+      <p class="faq-p">Step 3: Use Claude exactly as you do today. Every call is intercepted, the behavioral policy injected, then forwarded. Your code doesn't change — only how Claude thinks.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">Security & Privacy</div>
+      <p class="faq-p">AiGain is a <strong>pass-through proxy</strong>. Your prompts and outputs are not stored. AiGain only logs token counts, behavioral state snapshots, and timestamps — never content.</p>
+      <p class="faq-p">API keys are hashed before storage. Team keys are scoped — a team key cannot read another team's policy or usage data. Your Anthropic API key lives only on the AiGain server, never exposed to clients.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
+      <div class="faq-s-title">Who Is This For</div>
+      <p class="faq-p"><strong>Engineering teams</strong> burning tokens on verbose AI output that slows down code review.<br>
+      <strong>Support orgs</strong> that need AI to ask questions, not give answers.<br>
+      <strong>Research teams</strong> that need AI to go deep, not fast.<br>
+      <strong>CTOs and AI leads</strong> who need visibility and control over org-wide AI behavior — not just which model you're using.</p>
+      <p class="faq-p">If you're running more than 5 people on Claude, you need behavioral policy. AiGain is the layer that makes that possible.</p>
+    </div>
+
   </div>
 </div>
 
