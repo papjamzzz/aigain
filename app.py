@@ -506,6 +506,50 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .t2 .ag-ch-accent{background:linear-gradient(90deg,transparent,var(--purple2),transparent);box-shadow:0 0 8px rgba(139,92,246,.5);}
 .t3 .ag-ch-accent{background:linear-gradient(90deg,transparent,var(--magenta2),transparent);box-shadow:0 0 8px rgba(217,70,239,.5);}
 
+/* ── COMPARE PAGE ── */
+.ag-cmp-tab{height:28px;padding:0 14px;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.ag-cmp-tab.active{border-color:var(--magenta);background:rgba(217,70,239,.1);color:var(--magenta2);}
+.ag-cmp-sel-row{display:flex;gap:16px;align-items:flex-end;margin-bottom:14px;}
+.ag-cmp-sel-group{display:flex;flex-direction:column;gap:5px;flex:1;}
+.ag-cmp-sel-lbl{font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);}
+.ag-cmp-select{height:36px;background:var(--panel2);border:1px solid var(--border2);border-radius:3px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;padding:0 12px;outline:none;cursor:pointer;width:100%;}
+.ag-cmp-prompt-row{display:flex;gap:8px;margin-bottom:10px;}
+.ag-cmp-prompt{flex:1;height:40px;background:var(--panel2);border:1px solid var(--border2);border-radius:3px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;padding:0 14px;outline:none;transition:border-color .15s;}
+.ag-cmp-prompt:focus{border-color:var(--accent);}
+.ag-cmp-run-btn{height:40px;padding:0 22px;border-radius:3px;border:1px solid var(--magenta);background:rgba(217,70,239,.1);color:var(--magenta2);font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0;}
+.ag-cmp-run-btn:hover{background:rgba(217,70,239,.22);}
+.ag-cmp-status{font-size:11px;color:var(--text3);min-height:18px;margin-bottom:8px;letter-spacing:.04em;}
+.ag-cmp-outputs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.ag-cmp-out-lbl{font-size:8px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.ag-cmp-out-box{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:14px;min-height:140px;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap;overflow-y:auto;max-height:300px;}
+.ag-score-hd{font-size:8px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta2);margin-bottom:10px;}
+.ag-metrics{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.ag-metric{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:10px 14px;}
+.ag-metric-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ag-metric-name{font-size:9px;font-weight:800;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;}
+.ag-winner-chip{font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.ag-winner-a{color:var(--accent);background:rgba(0,221,212,.1);border:1px solid rgba(0,221,212,.3);}
+.ag-winner-b{color:var(--magenta2);background:rgba(217,70,239,.1);border:1px solid rgba(217,70,239,.3);}
+.ag-winner-tie{color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border2);}
+.ag-bars{display:flex;flex-direction:column;gap:4px;}
+.ag-bar-row{display:flex;align-items:center;gap:8px;}
+.ag-bar-lbl{font-size:8px;color:var(--text3);width:64px;flex-shrink:0;font-weight:600;}
+.ag-bar-track{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.ag-bar-fill-a{height:100%;background:linear-gradient(90deg,#005850,var(--accent));border-radius:2px;transition:width .6s ease;}
+.ag-bar-fill-b{height:100%;background:linear-gradient(90deg,#8010C0,var(--magenta));border-radius:2px;transition:width .6s ease;}
+.ag-bar-score{font-size:8px;font-weight:700;width:22px;text-align:right;font-variant-numeric:tabular-nums;}
+.ag-bar-score-a{color:var(--accent);}
+.ag-bar-score-b{color:var(--magenta2);}
+.ag-summary{font-size:13px;line-height:1.8;color:var(--text);background:var(--panel);border:1px solid rgba(217,70,239,.2);border-radius:4px;padding:14px 16px;margin-bottom:14px;}
+.ag-raw-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.ag-raw-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:12px 14px;}
+.ag-raw-lbl{font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.ag-raw-vals{display:flex;gap:20px;}
+.ag-raw-num-a{font-size:18px;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;}
+.ag-raw-num-b{font-size:18px;font-weight:900;color:var(--magenta2);font-variant-numeric:tabular-nums;}
+.ag-raw-sub{font-size:9px;color:var(--text3);margin-top:2px;}
+.ag-raw-note{font-size:10px;color:var(--text2);margin-top:8px;font-weight:600;}
+
 /* ── CHARTS ── */
 .chart-row{display:flex;gap:14px;margin-bottom:14px;}
 .chart-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;min-width:0;}
@@ -604,6 +648,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
   <button class="nav-btn" onclick="showPage('members')">Members</button>
   <button class="nav-btn" onclick="showPage('policy')">Policy</button>
   <button class="nav-btn" onclick="showPage('keys')">API Keys</button>
+  <button class="nav-btn" onclick="showPage('compare')">⊕ Compare</button>
 </nav>
 
 <div class="main">
@@ -699,6 +744,59 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
   <div id="page-policy" class="page">
     <div class="sec-hdr"><div class="sec-title">Org-Wide Policy Rules</div></div>
     <div class="policy-grid" id="policy-grid"></div>
+  </div>
+
+  <!-- ── COMPARE ── -->
+  <div id="page-compare" class="page">
+    <div class="sec-hdr">
+      <div class="sec-title">Compare Team Policies</div>
+      <div style="display:flex;gap:6px;margin-left:auto;">
+        <button class="ag-cmp-tab active" id="ag-tab-run" onclick="agSwitchTab('run')">Run</button>
+        <button class="ag-cmp-tab" id="ag-tab-stats" onclick="agSwitchTab('stats')">Stats</button>
+      </div>
+    </div>
+
+    <!-- RUN view -->
+    <div id="ag-cmp-run">
+      <div class="ag-cmp-sel-row">
+        <div class="ag-cmp-sel-group">
+          <div class="ag-cmp-sel-lbl">Policy A</div>
+          <select class="ag-cmp-select" id="ag-sel-a"></select>
+        </div>
+        <div style="font-size:20px;color:var(--border2);align-self:flex-end;padding-bottom:8px;">vs</div>
+        <div class="ag-cmp-sel-group">
+          <div class="ag-cmp-sel-lbl">Policy B</div>
+          <select class="ag-cmp-select" id="ag-sel-b"></select>
+        </div>
+      </div>
+      <div class="ag-cmp-prompt-row">
+        <input class="ag-cmp-prompt" id="ag-cmp-prompt" type="text" placeholder="Enter a prompt to run against both team policies…" onkeydown="if(event.key==='Enter')agRunCompare()">
+        <button class="ag-cmp-run-btn" id="ag-cmp-run-btn" onclick="agRunCompare()">RUN</button>
+      </div>
+      <div class="ag-cmp-status" id="ag-cmp-status"></div>
+      <div class="ag-cmp-outputs" id="ag-cmp-outputs" style="display:none;">
+        <div class="ag-cmp-out">
+          <div class="ag-cmp-out-lbl" id="ag-lbl-a">POLICY A</div>
+          <div class="ag-cmp-out-box" id="ag-out-a"></div>
+        </div>
+        <div class="ag-cmp-out">
+          <div class="ag-cmp-out-lbl" id="ag-lbl-b">POLICY B</div>
+          <div class="ag-cmp-out-box" id="ag-out-b"></div>
+        </div>
+      </div>
+      <div id="ag-scorecard" style="display:none;">
+        <div class="ag-score-hd">SCORECARD</div>
+        <div id="ag-metrics"></div>
+        <div class="ag-summary" id="ag-summary"></div>
+        <div class="ag-raw-strip" id="ag-raw-strip"></div>
+      </div>
+    </div>
+
+    <!-- STATS view -->
+    <div id="ag-cmp-stats" style="display:none;">
+      <div class="cmp-stats-total" id="ag-stats-total"><span>0</span> compare runs total</div>
+      <div id="ag-stats-teams"></div>
+    </div>
   </div>
 
 </div>
@@ -1169,6 +1267,7 @@ function showPage(name){
   document.querySelectorAll('.nav-btn').forEach(b=>{
     if(b.textContent.toLowerCase().includes(name)) b.classList.add('active');
   });
+  if (name === 'compare') agPopulateSelects();
 }
 
 // ── Modals ─────────────────────────────────────────────────────────────────────
@@ -1430,6 +1529,151 @@ function togglePolicyEdit(){
 
 loadOrg();
 loadKeys();
+
+// ── COMPARE PAGE ──────────────────────────────────────────────────────────────
+
+function agPopulateSelects() {
+  if (!window.ORG) return;
+  const teams = ORG.teams || [];
+  const opts  = teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  const orgOpt = `<option value="__org__">Org Default</option>`;
+  document.getElementById('ag-sel-a').innerHTML = orgOpt + opts;
+  document.getElementById('ag-sel-b').innerHTML = orgOpt + opts;
+  if (teams.length >= 1) document.getElementById('ag-sel-b').selectedIndex = 1;
+}
+
+function agGetPolicy(selId) {
+  const val = document.getElementById(selId).value;
+  if (val === '__org__') return ORG.policy;
+  const team = (ORG.teams || []).find(t => t.id === val);
+  return team ? team.policy : ORG.policy;
+}
+
+function agGetName(selId) {
+  const sel = document.getElementById(selId);
+  return sel.options[sel.selectedIndex]?.text || sel.value;
+}
+
+function agSwitchTab(tab) {
+  const runEl   = document.getElementById('ag-cmp-run');
+  const statsEl = document.getElementById('ag-cmp-stats');
+  const tabRun  = document.getElementById('ag-tab-run');
+  const tabStat = document.getElementById('ag-tab-stats');
+  if (tab === 'stats') {
+    runEl.style.display = 'none'; statsEl.style.display = '';
+    tabRun.classList.remove('active'); tabStat.classList.add('active');
+    agLoadStats();
+  } else {
+    runEl.style.display = ''; statsEl.style.display = 'none';
+    tabRun.classList.add('active'); tabStat.classList.remove('active');
+  }
+}
+
+let agTokA = 0, agTokB = 0, agWrdA = 0, agWrdB = 0;
+async function agRunCompare() {
+  const policyA = agGetPolicy('ag-sel-a');
+  const policyB = agGetPolicy('ag-sel-b');
+  const nameA   = agGetName('ag-sel-a');
+  const nameB   = agGetName('ag-sel-b');
+  const prompt  = document.getElementById('ag-cmp-prompt').value.trim();
+  if (!prompt) { document.getElementById('ag-cmp-status').textContent = 'Enter a prompt first.'; return; }
+  const btn = document.getElementById('ag-cmp-run-btn');
+  btn.disabled = true;
+  document.getElementById('ag-cmp-outputs').style.display = 'none';
+  document.getElementById('ag-scorecard').style.display = 'none';
+  document.getElementById('ag-lbl-a').textContent = nameA.toUpperCase();
+  document.getElementById('ag-lbl-b').textContent = nameB.toUpperCase();
+  const outA = document.getElementById('ag-out-a');
+  const outB = document.getElementById('ag-out-b');
+  outA.textContent = ''; outB.textContent = '';
+  const setStatus = s => { document.getElementById('ag-cmp-status').textContent = s; };
+  setStatus('Initializing…');
+  try {
+    const res = await fetch('/api/compare', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({policy_a: policyA, policy_b: policyB, name_a: nameA, name_b: nameB, prompt})
+    });
+    if (!res.ok && res.status !== 200) { const d = await res.json(); setStatus('Error: ' + (d.error||res.status)); btn.disabled=false; return; }
+    const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = '';
+    document.getElementById('ag-cmp-outputs').style.display = '';
+    while (true) {
+      const {done, value} = await reader.read(); if (done) break;
+      buf += dec.decode(value, {stream: true});
+      const lines = buf.split('\\n'); buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = JSON.parse(line.slice(6));
+        if (d.phase === 'a_start') setStatus('● Running ' + nameA + '…');
+        if (d.phase === 'a' && d.text) { outA.textContent += d.text; outA.scrollTop = outA.scrollHeight; }
+        if (d.phase === 'a_done') { agTokA = d.tokens||0; agWrdA = d.words||0; setStatus('● Running ' + nameB + '…'); }
+        if (d.phase === 'b' && d.text) { outB.textContent += d.text; outB.scrollTop = outB.scrollHeight; }
+        if (d.phase === 'b_done') { agTokB = d.tokens||0; agWrdB = d.words||0; setStatus('● Scoring…'); }
+        if (d.phase === 'scores') { agRenderScores(d.scores, nameA, nameB); setStatus(''); }
+        if (d.phase === 'score_error') setStatus('Scoring failed: ' + d.error);
+        if (d.error) { setStatus('Error: ' + d.error); btn.disabled = false; }
+        if (d.phase === 'done') btn.disabled = false;
+      }
+    }
+  } catch(e) { setStatus('Error: ' + e.message); btn.disabled = false; }
+}
+
+function agRenderScores(scores, nameA, nameB) {
+  const METRICS = [
+    {key:'adherence',label:'Adherence'},{key:'depth',label:'Depth'},
+    {key:'clarity',label:'Clarity'},{key:'efficiency',label:'Efficiency'},
+    {key:'confidence',label:'Confidence'},{key:'token_efficiency',label:'Token Efficiency'},
+  ];
+  document.getElementById('ag-metrics').innerHTML = METRICS.map(m => {
+    const s = scores[m.key] || {a:0,b:0,winner:'tie'};
+    const wc = s.winner==='a'?'ag-winner-a':s.winner==='b'?'ag-winner-b':'ag-winner-tie';
+    const wl = s.winner==='a'?nameA:s.winner==='b'?nameB:'TIE';
+    return `<div class="ag-metric"><div class="ag-metric-hd"><span class="ag-metric-name">${m.label}</span><span class="ag-winner-chip ${wc}">${wl}</span></div>
+    <div class="ag-bars">
+      <div class="ag-bar-row"><span class="ag-bar-lbl">${nameA}</span><div class="ag-bar-track"><div class="ag-bar-fill-a" style="width:${s.a}%"></div></div><span class="ag-bar-score ag-bar-score-a">${s.a}</span></div>
+      <div class="ag-bar-row"><span class="ag-bar-lbl">${nameB}</span><div class="ag-bar-track"><div class="ag-bar-fill-b" style="width:${s.b}%"></div></div><span class="ag-bar-score ag-bar-score-b">${s.b}</span></div>
+    </div></div>`;
+  }).join('');
+  document.getElementById('ag-summary').textContent = scores.summary || '';
+  const rawEl = document.getElementById('ag-raw-strip');
+  rawEl.innerHTML = `
+    <div class="ag-raw-card"><div class="ag-raw-lbl">Reply Length</div><div class="ag-raw-vals">
+      <div><div class="ag-raw-num-a">${agWrdA||'—'}</div><div class="ag-raw-sub">${nameA} words</div></div>
+      <div><div class="ag-raw-num-b">${agWrdB||'—'}</div><div class="ag-raw-sub">${nameB} words</div></div>
+    </div></div>
+    <div class="ag-raw-card"><div class="ag-raw-lbl">Tokens Used</div><div class="ag-raw-vals">
+      <div><div class="ag-raw-num-a">${agTokA||'—'}</div><div class="ag-raw-sub">${nameA}</div></div>
+      <div><div class="ag-raw-num-b">${agTokB||'—'}</div><div class="ag-raw-sub">${nameB}</div></div>
+    </div></div>`;
+  document.getElementById('ag-scorecard').style.display = '';
+}
+
+async function agLoadStats() {
+  const el = document.getElementById('ag-stats-teams');
+  const totEl = document.getElementById('ag-stats-total');
+  el.innerHTML = '<div class="cmp-stats-empty">Loading…</div>';
+  try {
+    const r = await fetch('/api/compare/stats');
+    const d = await r.json();
+    if (totEl) totEl.innerHTML = '<span>' + (d.runs||0) + '</span> compare runs total';
+    const teams = Object.entries(d.teams || {});
+    if (!teams.length) { el.innerHTML = '<div class="cmp-stats-empty">No compare runs yet. Run a comparison first.</div>'; return; }
+    const METRICS = ['adherence','depth','clarity','efficiency','confidence'];
+    const LABELS  = {adherence:'Adherence',depth:'Depth',clarity:'Clarity',efficiency:'Efficiency',confidence:'Confidence'};
+    el.innerHTML = teams.sort((a,b)=>b[1].runs-a[1].runs).map(([name,s]) => {
+      const winPct = s.runs ? Math.round(s.wins/s.runs*100) : 0;
+      const bars = METRICS.map(m => `<div class="cmp-stat-row">
+        <span class="cmp-stat-lbl">${LABELS[m]}</span>
+        <div class="cmp-stat-bar"><div class="cmp-stat-fill" style="width:${s[m]||0}%"></div></div>
+        <span class="cmp-stat-val">${s[m]||0}</span></div>`).join('');
+      return `<div class="cmp-preset-card">
+        <div class="cmp-preset-hdr"><span class="cmp-preset-name">${name}</span><span class="cmp-preset-runs">${s.runs} run${s.runs!==1?'s':''}</span><span class="cmp-preset-win">${winPct}% wins</span></div>
+        <div class="cmp-preset-body">${bars}</div></div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="cmp-stats-empty">Failed to load stats.</div>'; }
+}
+
+// populate compare selects when page loads
+document.addEventListener('DOMContentLoaded', () => setTimeout(agPopulateSelects, 500));
 
 // ── CTRL DOCK ────────────────────────────────────────────────────────────────
 
@@ -1790,6 +2034,153 @@ def test_proxy():
         "behavioral_prompt": build_behavioral_prompt(policy),
     })
 
+
+COMPARE_LOG = DATA_DIR / "comparisons.json"
+AG_MODEL    = "claude-sonnet-4-6"
+
+try:
+    import anthropic as _anthropic_lib
+except ImportError:
+    _anthropic_lib = None
+
+@app.route('/api/compare', methods=['POST'])
+def ag_compare():
+    data     = request.get_json() or {}
+    policy_a = data.get("policy_a")  # dict with mode/intensity/depth/room
+    policy_b = data.get("policy_b")
+    name_a   = data.get("name_a", "A")
+    name_b   = data.get("name_b", "B")
+    prompt   = data.get("prompt", "").strip()
+    if not prompt:
+        return jsonify({"error": "No prompt"}), 400
+    if not policy_a or not policy_b:
+        return jsonify({"error": "Two policies required"}), 400
+    api_key = ANTHROPIC_KEY
+    if not api_key:
+        return jsonify({"error": "ANTHROPIC_API_KEY not set"}), 500
+
+    def generate():
+        if not _anthropic_lib:
+            yield f"data: {json.dumps({'error': 'anthropic not installed'})}\n\n"; return
+        client = _anthropic_lib.Anthropic(api_key=api_key)
+
+        def run_policy(policy, phase):
+            return build_behavioral_prompt(policy)
+
+        output_a = ""; tokens_a = 0
+        yield f"data: {json.dumps({'phase': 'a_start'})}\n\n"
+        try:
+            with client.messages.stream(
+                model=AG_MODEL, max_tokens=2048,
+                system=build_behavioral_prompt(policy_a),
+                messages=[{"role": "user", "content": prompt}],
+            ) as s:
+                for text in s.text_stream:
+                    output_a += text
+                    yield f"data: {json.dumps({'phase': 'a', 'text': text})}\n\n"
+                try: tokens_a = s.get_final_message().usage.output_tokens
+                except: pass
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"; return
+        words_a = len(output_a.split())
+        yield f"data: {json.dumps({'phase': 'a_done', 'tokens': tokens_a, 'words': words_a})}\n\n"
+
+        output_b = ""; tokens_b = 0
+        yield f"data: {json.dumps({'phase': 'b_start'})}\n\n"
+        try:
+            with client.messages.stream(
+                model=AG_MODEL, max_tokens=2048,
+                system=build_behavioral_prompt(policy_b),
+                messages=[{"role": "user", "content": prompt}],
+            ) as s:
+                for text in s.text_stream:
+                    output_b += text
+                    yield f"data: {json.dumps({'phase': 'b', 'text': text})}\n\n"
+                try: tokens_b = s.get_final_message().usage.output_tokens
+                except: pass
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"; return
+        words_b = len(output_b.split())
+        yield f"data: {json.dumps({'phase': 'b_done', 'tokens': tokens_b, 'words': words_b})}\n\n"
+
+        yield f"data: {json.dumps({'phase': 'scoring'})}\n\n"
+        try:
+            score_prompt = (
+                "You are a behavioral evaluation system for AI outputs.\n"
+                "The SAME prompt was run against two different AI behavioral configurations.\n\n"
+                f"PROMPT: {prompt}\n\n"
+                f"OUTPUT A ({name_a}):\n{output_a}\n\n"
+                f"OUTPUT B ({name_b}):\n{output_b}\n\n"
+                f"USAGE: Output A used {tokens_a} tokens ({words_a} words). "
+                f"Output B used {tokens_b} tokens ({words_b} words).\n\n"
+                "Score each on these 6 metrics (0-100):\n"
+                "1. ADHERENCE 2. DEPTH 3. CLARITY 4. EFFICIENCY 5. CONFIDENCE 6. TOKEN_EFFICIENCY\n\n"
+                "Return ONLY valid JSON:\n"
+                '{"adherence":{"a":0,"b":0,"winner":"a"},'
+                '"depth":{"a":0,"b":0,"winner":"a"},'
+                '"clarity":{"a":0,"b":0,"winner":"a"},'
+                '"efficiency":{"a":0,"b":0,"winner":"a"},'
+                '"confidence":{"a":0,"b":0,"winner":"a"},'
+                '"token_efficiency":{"a":0,"b":0,"winner":"a"},'
+                '"overall_winner":"a","summary":"2-3 sentences on key behavioral differences"}'
+            )
+            resp = client.messages.create(
+                model=AG_MODEL, max_tokens=512,
+                messages=[{"role": "user", "content": score_prompt}],
+            )
+            raw = resp.content[0].text.strip()
+            if "```" in raw:
+                parts = raw.split("```"); raw = parts[1] if len(parts) > 1 else parts[0]
+                if raw.startswith("json"): raw = raw[4:].strip()
+            scores = json.loads(raw)
+            try:
+                existing = json.loads(COMPARE_LOG.read_text()) if COMPARE_LOG.exists() else []
+                existing.append({
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "prompt": prompt, "name_a": name_a, "name_b": name_b,
+                    "policy_a": policy_a, "policy_b": policy_b, "scores": scores,
+                    "tokens_a": tokens_a, "tokens_b": tokens_b,
+                })
+                COMPARE_LOG.write_text(json.dumps(existing, indent=2))
+            except Exception: pass
+            yield f"data: {json.dumps({'phase': 'scores', 'scores': scores})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'phase': 'score_error', 'error': str(e)})}\n\n"
+        yield f"data: {json.dumps({'phase': 'done'})}\n\n"
+
+    return Response(stream_with_context(generate()),
+                    content_type="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+@app.route('/api/compare/stats')
+def ag_compare_stats():
+    if not COMPARE_LOG.exists():
+        return jsonify({"runs": 0, "teams": {}})
+    try:
+        comparisons = json.loads(COMPARE_LOG.read_text())
+    except Exception:
+        return jsonify({"runs": 0, "teams": {}})
+    metrics = ["adherence", "depth", "clarity", "efficiency", "confidence"]
+    team_stats = {}
+    for comp in comparisons:
+        for side, name in [("a", comp.get("name_a")), ("b", comp.get("name_b"))]:
+            if not name: continue
+            if name not in team_stats:
+                team_stats[name] = {m: [] for m in metrics}
+                team_stats[name].update({"wins": 0, "runs": 0})
+            team_stats[name]["runs"] += 1
+            s = comp.get("scores", {})
+            for m in metrics:
+                v = s.get(m, {}).get(side)
+                if v is not None: team_stats[name][m].append(v)
+            if s.get("overall_winner") == side: team_stats[name]["wins"] += 1
+    result = {}
+    for name, d in team_stats.items():
+        result[name] = {"runs": d["runs"], "wins": d["wins"]}
+        for m in metrics:
+            vals = d[m]
+            result[name][m] = round(sum(vals)/len(vals), 1) if vals else 0
+    return jsonify({"runs": len(comparisons), "teams": result})
 
 @app.route('/stream')
 def stream():
