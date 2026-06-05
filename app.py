@@ -1097,7 +1097,7 @@ function render(){
   renderMembers();
   renderPolicy();
   renderActivity();
-  if (_chartReady) setTimeout(renderCharts, 50);
+  setTimeout(function(){ if (_chartReady) renderCharts(); }, 200);
 }
 
 function renderActivity(){
@@ -1396,7 +1396,7 @@ window._onChartReady = function() {
   Chart.defaults.color = CHART_DEFAULTS.color;
   Chart.defaults.font.family = 'Inter';
   Chart.defaults.font.size = 10;
-  if (window.ORG) renderCharts();
+  setTimeout(function(){ if (window.ORG) renderCharts(); }, 100);
 };
 
 function destroyChart(id){
