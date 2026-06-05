@@ -174,19 +174,22 @@ def log_usage(key_id: str, team_id: str, member_id: str, model: str,
 
 # ── Default org structure ──────────────────────────────────────────────────────
 
+ORG_VERSION = 3
+
 DEFAULT_ORG = {
-    "name": "Your Organization",
+    "_v": ORG_VERSION,
+    "name": "Acme Corp",
     "plan": "enterprise",
     "policy": {
         "mode":      "BUILD",
-        "intensity": 0.6,
+        "intensity": 0.65,
         "depth":     0.5,
         "certainty": 0.6,
-        "room":      0.4,
+        "room":      0.35,
         "intensity_min": 0.2, "intensity_max": 1.0,
-        "depth_min":     0.2, "depth_max":     1.0,
+        "depth_min":     0.1, "depth_max":     1.0,
         "certainty_min": 0.2, "certainty_max": 1.0,
-        "room_min":      0.1, "room_max":      1.0,
+        "room_min":      0.05, "room_max":      1.0,
     },
     "teams": [
         {
@@ -194,51 +197,87 @@ DEFAULT_ORG = {
             "name": "Engineering",
             "color": "#00DDD4",
             "members": 14,
-            "policy": { "mode": "BUILD", "intensity": 0.75, "depth": 0.65, "certainty": 0.7, "room": 0.3 }
+            # BUILD · max intensity · dead room · medium depth
+            # Claude ships code, no commentary, no alternatives. Terse.
+            "policy": { "mode": "BUILD", "intensity": 0.95, "depth": 0.55, "certainty": 0.9, "room": 0.08 }
         },
         {
             "id": "support",
             "name": "Customer Support",
             "color": "#A78BFA",
             "members": 22,
-            "policy": { "mode": "EXPLORE", "intensity": 0.5, "depth": 0.4, "certainty": 0.5, "room": 0.7 }
+            # EXPLORE · low intensity · high verbosity · low depth
+            # Claude explores, asks questions, validates. Verbose and warm.
+            "policy": { "mode": "EXPLORE", "intensity": 0.3, "depth": 0.35, "certainty": 0.4, "room": 0.88 }
         },
         {
             "id": "research",
             "name": "Research",
             "color": "#F59E0B",
             "members": 8,
-            "policy": { "mode": "EXPLORE", "intensity": 0.8, "depth": 0.85, "certainty": 0.3, "room": 0.8 }
+            # EXPLORE · high depth · high verbosity · low certainty
+            # Claude goes deep, surfaces tradeoffs, never commits prematurely.
+            "policy": { "mode": "EXPLORE", "intensity": 0.45, "depth": 0.95, "certainty": 0.25, "room": 0.85 }
         },
         {
             "id": "sales",
             "name": "Sales",
             "color": "#34D399",
             "members": 31,
-            "policy": { "mode": "BUILD", "intensity": 0.55, "depth": 0.35, "certainty": 0.75, "room": 0.5 }
+            # BUILD · high confidence · low depth · medium room
+            # Claude is decisive and punchy. Closes. No hedging.
+            "policy": { "mode": "BUILD", "intensity": 0.82, "depth": 0.22, "certainty": 0.95, "room": 0.42 }
+        },
+        {
+            "id": "legal",
+            "name": "Legal",
+            "color": "#F87171",
+            "members": 6,
+            # BUILD · very high depth · very low room · high certainty
+            # Claude is precise, dense, terse. Every word load-bearing.
+            "policy": { "mode": "BUILD", "intensity": 0.88, "depth": 0.90, "certainty": 0.85, "room": 0.1 }
+        },
+        {
+            "id": "executive",
+            "name": "Executive",
+            "color": "#D946EF",
+            "members": 5,
+            # BUILD · max intensity · minimal depth · dead room
+            # Claude gives one answer. No options. No reasoning. Maximum savings.
+            "policy": { "mode": "BUILD", "intensity": 1.0, "depth": 0.15, "certainty": 1.0, "room": 0.05 }
         },
     ],
     "members": [
-        { "id": "m1", "name": "Alex Chen",      "team": "engineering",  "role": "Senior Engineer",    "intensity": None, "depth": None },
-        { "id": "m2", "name": "Jordan Park",    "team": "engineering",  "role": "Lead Engineer",      "intensity": 0.9,  "depth": 0.8  },
-        { "id": "m3", "name": "Sam Rivera",     "team": "support",      "role": "Support Lead",       "intensity": None, "depth": None },
-        { "id": "m4", "name": "Taylor Brooks",  "team": "research",     "role": "Research Analyst",   "intensity": None, "depth": None },
-        { "id": "m5", "name": "Morgan Lee",     "team": "sales",        "role": "Account Executive",  "intensity": 0.4,  "depth": None },
+        { "id": "m1",  "name": "Alex Chen",       "team": "engineering",  "role": "Senior Engineer",       "intensity": None, "depth": None },
+        { "id": "m2",  "name": "Jordan Park",      "team": "engineering",  "role": "Lead Engineer",         "intensity": 0.98, "depth": 0.7  },
+        { "id": "m3",  "name": "Sam Rivera",       "team": "support",      "role": "Support Lead",          "intensity": None, "depth": None },
+        { "id": "m4",  "name": "Taylor Brooks",    "team": "research",     "role": "Research Analyst",      "intensity": None, "depth": None },
+        { "id": "m5",  "name": "Morgan Lee",       "team": "sales",        "role": "Account Executive",     "intensity": 0.88, "depth": None },
+        { "id": "m6",  "name": "Casey Kim",        "team": "legal",        "role": "General Counsel",       "intensity": None, "depth": None },
+        { "id": "m7",  "name": "Drew Patel",       "team": "executive",    "role": "CTO",                   "intensity": None, "depth": None },
+        { "id": "m8",  "name": "Riley Zhang",      "team": "engineering",  "role": "Staff Engineer",        "intensity": None, "depth": None },
+        { "id": "m9",  "name": "Quinn Torres",     "team": "support",      "role": "Support Specialist",    "intensity": 0.25, "depth": None },
+        { "id": "m10", "name": "Avery Johnson",    "team": "research",     "role": "Data Scientist",        "intensity": None, "depth": 0.98 },
     ],
     "usage": {
-        "tokens_today":   4820000,
-        "tokens_week":    31400000,
-        "tokens_month":   118000000,
-        "cost_month":     354.00,
-        "estimated_save": 89.50,
+        "tokens_today":   6240000,
+        "tokens_week":    43800000,
+        "tokens_month":   162000000,
+        "cost_month":     486.00,
+        "estimated_save": 141.20,
     }
 }
 
 def load_org():
     if ORG_FILE.exists():
-        return json.loads(ORG_FILE.read_text())
+        try:
+            org = json.loads(ORG_FILE.read_text())
+            if org.get("_v", 0) >= ORG_VERSION:
+                return org
+        except Exception:
+            pass
     ORG_FILE.write_text(json.dumps(DEFAULT_ORG, indent=2))
-    return DEFAULT_ORG
+    return dict(DEFAULT_ORG)
 
 def save_org(org):
     ORG_FILE.write_text(json.dumps(org, indent=2))
