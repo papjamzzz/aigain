@@ -1766,10 +1766,9 @@ function setDockFader(field, val) {
   const thumb = document.getElementById('dfth-' + field);
   const valEl = document.getElementById('dock-val-' + field);
   if (!track || !fill || !thumb) return;
-  const h = track.offsetHeight || 1;
+  const h = track.offsetHeight || 200;
   const pct = val * 100;
   fill.style.height  = pct + '%';
-  const h = track.offsetHeight || 200;
   thumb.style.bottom = (val * (h - THUMB_H * 2)) + 'px';
   if (valEl) valEl.textContent = val.toFixed(2);
 }
