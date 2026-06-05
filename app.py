@@ -477,7 +477,7 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .t3 .ag-fader-fill{background:linear-gradient(0deg,rgba(180,28,160,.94) 0%,rgba(217,70,200,.72) 40%,rgba(240,130,230,.46) 75%,rgba(255,200,248,.18) 100%);box-shadow:0 0 24px rgba(217,70,239,.4),0 0 60px rgba(217,70,239,.12),inset 0 0 32px rgba(180,40,200,.08);}
 .ag-fader-thumb{
   position:absolute;width:calc(100% + 4px);height:28px;
-  left:-2px;transform:translateY(50%);
+  left:-2px;transform:none;
   cursor:ns-resize;z-index:3;touch-action:none;
   border-radius:4px;
   background:linear-gradient(180deg,#1E2E3C 0%,#14202C 30%,#0C1620 55%,#121E2A 80%,#1A2A38 100%);
@@ -1766,10 +1766,9 @@ function setDockFader(field, val) {
   const thumb = document.getElementById('dfth-' + field);
   const valEl = document.getElementById('dock-val-' + field);
   if (!track || !fill || !thumb) return;
-  const h = track.offsetHeight || 200;
   const pct = val * 100;
   fill.style.height  = pct + '%';
-  thumb.style.bottom = (val * (h - THUMB_H)) + 'px';
+  thumb.style.bottom = 'calc(' + pct + '% - 14px)';
   if (valEl) valEl.textContent = val.toFixed(2);
 }
 
