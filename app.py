@@ -1153,6 +1153,76 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
     <div class="faq-divider"></div>
 
     <div class="faq-s">
+      <div class="faq-s-title">Team Behavioral Profiles</div>
+      <p class="faq-p">Every team gets a different configuration. The differences are not subtle — they produce measurably different outputs on the same prompt.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:10px;margin-top:8px;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);">Team</th>
+            <th style="text-align:left;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);">Mode</th>
+            <th style="text-align:center;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);">Intensity</th>
+            <th style="text-align:center;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--purple2);">Depth</th>
+            <th style="text-align:center;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta2);">Verbosity</th>
+            <th style="text-align:left;padding:6px 8px;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);">Expected Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:700;color:var(--accent);">Engineering</td>
+            <td style="padding:7px 8px;color:var(--text2);">BUILD</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--accent);">0.95</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--text2);">0.55</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--green);">0.08</td>
+            <td style="padding:7px 8px;color:var(--text3);">Terse, ships code, ~200 tokens</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:700;color:var(--amber);">Research</td>
+            <td style="padding:7px 8px;color:var(--text2);">EXPLORE</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--text2);">0.45</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--amber);">0.95</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--amber);">0.85</td>
+            <td style="padding:7px 8px;color:var(--text3);">Deep analysis, verbose, ~1500 tokens</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:700;color:var(--purple2);">Support</td>
+            <td style="padding:7px 8px;color:var(--text2);">EXPLORE</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--text2);">0.30</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--text2);">0.35</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--amber);">0.88</td>
+            <td style="padding:7px 8px;color:var(--text3);">Warm, thorough, lots of words</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:700;color:var(--green);">Sales</td>
+            <td style="padding:7px 8px;color:var(--text2);">BUILD</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--accent);">0.82</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--green);">0.22</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--text2);">0.42</td>
+            <td style="padding:7px 8px;color:var(--text3);">Punchy, closes, no hedging</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:7px 8px;font-weight:700;color:var(--red);">Legal</td>
+            <td style="padding:7px 8px;color:var(--text2);">BUILD</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--accent);">0.88</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--amber);">0.90</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--green);">0.10</td>
+            <td style="padding:7px 8px;color:var(--text3);">Dense, precise, every word loads</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 8px;font-weight:700;color:var(--magenta2);">Executive</td>
+            <td style="padding:7px 8px;color:var(--text2);">BUILD</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--magenta2);">1.0</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--green);">0.15</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:800;color:var(--green);">0.05</td>
+            <td style="padding:7px 8px;color:var(--text3);">One answer. No reasoning. Max savings.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="faq-p" style="margin-top:10px;"><strong>Best demo:</strong> Compare Engineering vs Research on the same prompt. Expect 5–8× token difference — same task, radically different cost.</p>
+    </div>
+
+    <div class="faq-divider"></div>
+
+    <div class="faq-s">
       <div class="faq-s-title">The Compare Engine</div>
       <p class="faq-p">Run the same prompt through two different team policies simultaneously. AiGain scores both outputs across 6 metrics and tells you which behavioral configuration won — and why.</p>
       <p class="faq-p">Metrics: <strong>Adherence, Depth, Clarity, Efficiency, Confidence, Token Efficiency.</strong> Each scored 0–100. A plain-English summary explains the behavioral difference.</p>
