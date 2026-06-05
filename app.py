@@ -564,7 +564,15 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .chart-body{padding:16px;height:200px;position:relative;}
 .chart-body-donut{height:200px;display:flex;align-items:center;justify-content:center;}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+  s.async=true;
+  s.onload=function(){ if(window._onChartReady) window._onChartReady(); };
+  document.head.appendChild(s);
+})();
+</script>
 </head>
 <body>
 
@@ -1089,7 +1097,7 @@ function render(){
   renderMembers();
   renderPolicy();
   renderActivity();
-  setTimeout(renderCharts, 50);
+  if (_chartReady) setTimeout(renderCharts, 50);
 }
 
 function renderActivity(){
@@ -1379,18 +1387,24 @@ const CHART_DEFAULTS = {
   grid: 'rgba(22,32,48,.8)',
   tick: '#405870',
 };
-Chart.defaults.color = CHART_DEFAULTS.color;
-Chart.defaults.font.family = 'Inter';
-Chart.defaults.font.size = 10;
 
 let _charts = {};
+let _chartReady = false;
+
+window._onChartReady = function() {
+  _chartReady = true;
+  Chart.defaults.color = CHART_DEFAULTS.color;
+  Chart.defaults.font.family = 'Inter';
+  Chart.defaults.font.size = 10;
+  if (window.ORG) renderCharts();
+};
 
 function destroyChart(id){
   if(_charts[id]){ _charts[id].destroy(); delete _charts[id]; }
 }
 
 function renderCharts(){
-  if(!ORG) return;
+  if(!ORG || !_chartReady || typeof Chart === 'undefined') return;
 
   // ── 30-day usage line chart ───────────────────────────────────────────────
   destroyChart('usage');
