@@ -530,32 +530,86 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .ag-cmp-run-btn{height:40px;padding:0 22px;border-radius:3px;border:1px solid var(--magenta);background:rgba(217,70,239,.1);color:var(--magenta2);font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0;}
 .ag-cmp-run-btn:hover{background:rgba(217,70,239,.22);}
 .ag-cmp-status{font-size:11px;color:var(--text3);min-height:18px;margin-bottom:8px;letter-spacing:.04em;}
-.ag-cmp-outputs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* ── PROOF SCREEN ── */
+.ag-proof{display:none;flex-direction:column;gap:20px;animation:ag-fade-in .4s ease;}
+@keyframes ag-fade-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* Winner banner */
+.ag-winner-banner{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:24px 28px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
+.ag-winner-banner::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;}
+.ag-winner-banner.win-a::before{background:var(--accent);}
+.ag-winner-banner.win-b::before{background:var(--magenta);}
+.ag-winner-glow{position:absolute;top:-60px;width:200px;height:200px;border-radius:50%;filter:blur(60px);opacity:.25;pointer-events:none;}
+.ag-winner-banner.win-a .ag-winner-glow{background:var(--accent);left:-40px;}
+.ag-winner-banner.win-b .ag-winner-glow{background:var(--magenta);right:-40px;left:auto;}
+.ag-winner-label{font-size:9px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.ag-winner-name{font-family:'Abril Fatface',serif;font-size:42px;letter-spacing:.02em;line-height:1;}
+.ag-winner-banner.win-a .ag-winner-name{color:var(--accent);text-shadow:0 0 30px rgba(0,221,212,.4);}
+.ag-winner-banner.win-b .ag-winner-name{color:var(--magenta2);text-shadow:0 0 30px rgba(217,70,239,.4);}
+.ag-winner-score-tag{font-size:13px;font-weight:900;color:var(--text3);margin-top:6px;letter-spacing:.04em;}
+.ag-winner-score-tag span{color:var(--text);font-size:16px;}
+.ag-winner-divider{width:1px;background:var(--border);align-self:stretch;margin:0 4px;flex-shrink:0;}
+.ag-winner-summary{flex:1;font-size:13px;line-height:1.8;color:var(--text2);font-style:italic;}
+
+/* Metric grid */
+.ag-metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ag-mc{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
+.ag-mc-name{font-size:8px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+.ag-mc-scores{display:flex;align-items:flex-end;gap:10px;margin-bottom:10px;}
+.ag-mc-score{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.ag-mc-num{font-size:36px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.02em;}
+.ag-mc-num.score-a{color:var(--accent);}
+.ag-mc-num.score-b{color:var(--magenta2);}
+.ag-mc-lbl{font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.06em;}
+.ag-mc-vs{font-size:10px;color:var(--border2);font-weight:700;padding-bottom:8px;}
+.ag-mc-bar-wrap{display:flex;flex-direction:column;gap:4px;}
+.ag-mc-bar-row{display:flex;align-items:center;gap:6px;}
+.ag-mc-bar-track{flex:1;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+.ag-mc-bar-fill-a{height:100%;background:linear-gradient(90deg,#005850,var(--accent));border-radius:2px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.ag-mc-bar-fill-b{height:100%;background:linear-gradient(90deg,#8010C0,var(--magenta));border-radius:2px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.ag-mc-winner-flag{position:absolute;top:10px;right:10px;font-size:7px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:2px;}
+.ag-mc-winner-flag.win-a{color:var(--accent);background:rgba(0,221,212,.12);border:1px solid rgba(0,221,212,.3);}
+.ag-mc-winner-flag.win-b{color:var(--magenta2);background:rgba(217,70,239,.12);border:1px solid rgba(217,70,239,.3);}
+.ag-mc-winner-flag.win-tie{color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border2);}
+
+/* Token proof strip */
+.ag-token-strip{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ag-token-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 20px;}
+.ag-token-lbl{font-size:8px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.ag-token-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--border);}
+.ag-token-row:last-child{border-bottom:none;}
+.ag-token-policy{font-size:10px;font-weight:700;color:var(--text2);}
+.ag-token-val-a{font-size:20px;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;}
+.ag-token-val-b{font-size:20px;font-weight:900;color:var(--magenta2);font-variant-numeric:tabular-nums;}
+.ag-token-note{font-size:9px;color:var(--text3);margin-top:8px;font-weight:600;}
+
+/* Output comparison - collapsible */
+.ag-outputs-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 0;border-top:1px solid var(--border);user-select:none;}
+.ag-outputs-toggle-lbl{font-size:8px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);}
+.ag-outputs-toggle-arrow{font-size:10px;color:var(--text3);transition:transform .2s;}
+.ag-outputs-toggle.open .ag-outputs-toggle-arrow{transform:rotate(180deg);}
+.ag-cmp-outputs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
 .ag-cmp-out-lbl{font-size:8px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
-.ag-cmp-out-box{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:14px;min-height:140px;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap;overflow-y:auto;max-height:300px;}
-.ag-score-hd{font-size:8px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--magenta2);margin-bottom:10px;}
-.ag-metrics{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.ag-metric{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:10px 14px;}
-.ag-metric-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.ag-metric-name{font-size:9px;font-weight:800;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;}
+.ag-cmp-out-box{background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:14px;min-height:140px;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap;overflow-y:auto;max-height:260px;}
+
+/* History table */
+.ag-history-hd{font-size:8px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;margin-top:4px;}
+.ag-history-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.ag-history-table th{padding:8px 14px;text-align:left;font-size:7px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);background:#040810;}
+.ag-history-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);}
+.ag-history-table tr:last-child td{border-bottom:none;}
+.ag-history-table tr:hover td{background:rgba(255,255,255,.015);}
+.ag-history-winner-a{color:var(--accent);font-weight:800;}
+.ag-history-winner-b{color:var(--magenta2);font-weight:800;}
+.ag-history-prompt{font-size:11px;color:var(--text2);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ag-history-score{font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;}
+.ag-history-empty{text-align:center;padding:28px;color:var(--text3);font-size:11px;font-style:italic;}
+
 .ag-winner-chip{font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
 .ag-winner-a{color:var(--accent);background:rgba(0,221,212,.1);border:1px solid rgba(0,221,212,.3);}
 .ag-winner-b{color:var(--magenta2);background:rgba(217,70,239,.1);border:1px solid rgba(217,70,239,.3);}
 .ag-winner-tie{color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border2);}
-.ag-bars{display:flex;flex-direction:column;gap:4px;}
-.ag-bar-row{display:flex;align-items:center;gap:8px;}
-.ag-bar-lbl{font-size:8px;color:var(--text3);width:64px;flex-shrink:0;font-weight:600;}
-.ag-bar-track{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
-.ag-bar-fill-a{height:100%;background:linear-gradient(90deg,#005850,var(--accent));border-radius:2px;transition:width .6s ease;}
-.ag-bar-fill-b{height:100%;background:linear-gradient(90deg,#8010C0,var(--magenta));border-radius:2px;transition:width .6s ease;}
-.ag-bar-score{font-size:8px;font-weight:700;width:22px;text-align:right;font-variant-numeric:tabular-nums;}
-.ag-bar-score-a{color:var(--accent);}
-.ag-bar-score-b{color:var(--magenta2);}
-.ag-summary{font-size:13px;line-height:1.8;color:var(--text);background:var(--panel);border:1px solid rgba(217,70,239,.2);border-radius:4px;padding:14px 16px;margin-bottom:14px;}
-.ag-raw-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.ag-raw-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:12px 14px;}
-.ag-raw-lbl{font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
-.ag-raw-vals{display:flex;gap:20px;}
 .ag-raw-num-a{font-size:18px;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;}
 .ag-raw-num-b{font-size:18px;font-weight:900;color:var(--magenta2);font-variant-numeric:tabular-nums;}
 .ag-raw-sub{font-size:9px;color:var(--text3);margin-top:2px;}
@@ -789,25 +843,51 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
         </div>
       </div>
       <div class="ag-cmp-prompt-row">
-        <input class="ag-cmp-prompt" id="ag-cmp-prompt" type="text" placeholder="Enter a prompt to run against both team policies…" onkeydown="if(event.key==='Enter')agRunCompare()">
+        <input class="ag-cmp-prompt" id="ag-cmp-prompt" type="text" placeholder="Same prompt. Two behavioral states. Measurably different output." onkeydown="if(event.key==='Enter')agRunCompare()">
         <button class="ag-cmp-run-btn" id="ag-cmp-run-btn" onclick="agRunCompare()">RUN</button>
       </div>
       <div class="ag-cmp-status" id="ag-cmp-status"></div>
-      <div class="ag-cmp-outputs" id="ag-cmp-outputs" style="display:none;">
-        <div class="ag-cmp-out">
-          <div class="ag-cmp-out-lbl" id="ag-lbl-a">POLICY A</div>
-          <div class="ag-cmp-out-box" id="ag-out-a"></div>
+
+      <!-- PROOF SCREEN — shown after scoring -->
+      <div class="ag-proof" id="ag-proof">
+
+        <!-- Winner banner -->
+        <div class="ag-winner-banner" id="ag-winner-banner">
+          <div class="ag-winner-glow"></div>
+          <div>
+            <div class="ag-winner-label">Winner</div>
+            <div class="ag-winner-name" id="ag-winner-name">—</div>
+            <div class="ag-winner-score-tag" id="ag-winner-score-tag"></div>
+          </div>
+          <div class="ag-winner-divider"></div>
+          <div class="ag-winner-summary" id="ag-winner-summary"></div>
         </div>
-        <div class="ag-cmp-out">
-          <div class="ag-cmp-out-lbl" id="ag-lbl-b">POLICY B</div>
-          <div class="ag-cmp-out-box" id="ag-out-b"></div>
+
+        <!-- 6-metric grid -->
+        <div class="ag-metric-grid" id="ag-metric-grid"></div>
+
+        <!-- Token proof -->
+        <div class="ag-token-strip" id="ag-token-strip"></div>
+
+        <!-- Output comparison toggle -->
+        <div class="ag-outputs-toggle" id="ag-outputs-toggle" onclick="agToggleOutputs()">
+          <span class="ag-outputs-toggle-lbl">View raw outputs</span>
+          <span class="ag-outputs-toggle-arrow">▼</span>
         </div>
-      </div>
-      <div id="ag-scorecard" style="display:none;">
-        <div class="ag-score-hd">SCORECARD</div>
-        <div id="ag-metrics"></div>
-        <div class="ag-summary" id="ag-summary"></div>
-        <div class="ag-raw-strip" id="ag-raw-strip"></div>
+        <div id="ag-cmp-outputs" style="display:none;">
+          <div class="ag-cmp-out">
+            <div class="ag-cmp-out-lbl" id="ag-lbl-a">POLICY A</div>
+            <div class="ag-cmp-out-box" id="ag-out-a"></div>
+          </div>
+          <div class="ag-cmp-out">
+            <div class="ag-cmp-out-lbl" id="ag-lbl-b">POLICY B</div>
+            <div class="ag-cmp-out-box" id="ag-out-b"></div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="ag-history-hd">Run History</div>
+        <div id="ag-history-wrap"></div>
       </div>
     </div>
 
@@ -1665,7 +1745,7 @@ async function agRunCompare() {
   const btn = document.getElementById('ag-cmp-run-btn');
   btn.disabled = true;
   document.getElementById('ag-cmp-outputs').style.display = 'none';
-  document.getElementById('ag-scorecard').style.display = 'none';
+  document.getElementById('ag-proof').style.display = 'none';
   document.getElementById('ag-lbl-a').textContent = nameA.toUpperCase();
   document.getElementById('ag-lbl-b').textContent = nameB.toUpperCase();
   const outA = document.getElementById('ag-out-a');
@@ -1704,32 +1784,117 @@ async function agRunCompare() {
 
 function agRenderScores(scores, nameA, nameB) {
   const METRICS = [
-    {key:'adherence',label:'Adherence'},{key:'depth',label:'Depth'},
-    {key:'clarity',label:'Clarity'},{key:'efficiency',label:'Efficiency'},
-    {key:'confidence',label:'Confidence'},{key:'token_efficiency',label:'Token Efficiency'},
+    {key:'adherence',label:'Adherence'},
+    {key:'depth',label:'Depth'},
+    {key:'clarity',label:'Clarity'},
+    {key:'efficiency',label:'Efficiency'},
+    {key:'confidence',label:'Confidence'},
+    {key:'token_efficiency',label:'Token Efficiency'},
   ];
-  document.getElementById('ag-metrics').innerHTML = METRICS.map(m => {
-    const s = scores[m.key] || {a:0,b:0,winner:'tie'};
-    const wc = s.winner==='a'?'ag-winner-a':s.winner==='b'?'ag-winner-b':'ag-winner-tie';
-    const wl = s.winner==='a'?nameA:s.winner==='b'?nameB:'TIE';
-    return `<div class="ag-metric"><div class="ag-metric-hd"><span class="ag-metric-name">${m.label}</span><span class="ag-winner-chip ${wc}">${wl}</span></div>
-    <div class="ag-bars">
-      <div class="ag-bar-row"><span class="ag-bar-lbl">${nameA}</span><div class="ag-bar-track"><div class="ag-bar-fill-a" style="width:${s.a}%"></div></div><span class="ag-bar-score ag-bar-score-a">${s.a}</span></div>
-      <div class="ag-bar-row"><span class="ag-bar-lbl">${nameB}</span><div class="ag-bar-track"><div class="ag-bar-fill-b" style="width:${s.b}%"></div></div><span class="ag-bar-score ag-bar-score-b">${s.b}</span></div>
-    </div></div>`;
+
+  // Count wins
+  let winsA = 0, winsB = 0;
+  METRICS.forEach(m => {
+    const w = (scores[m.key]||{}).winner;
+    if (w === 'a') winsA++;
+    else if (w === 'b') winsB++;
+  });
+  const overallWinner = winsA > winsB ? 'a' : winsB > winsA ? 'b' : 'tie';
+  const winnerName = overallWinner === 'a' ? nameA : overallWinner === 'b' ? nameB : 'TIE';
+  const winCount = overallWinner === 'a' ? winsA : winsB;
+
+  // Winner banner
+  const banner = document.getElementById('ag-winner-banner');
+  banner.className = 'ag-winner-banner' + (overallWinner === 'a' ? ' win-a' : overallWinner === 'b' ? ' win-b' : '');
+  document.getElementById('ag-winner-name').textContent = winnerName;
+  document.getElementById('ag-winner-score-tag').innerHTML = `<span>${winCount}</span> / ${METRICS.length} metrics`;
+  document.getElementById('ag-winner-summary').textContent = scores.summary || '';
+
+  // Metric grid
+  document.getElementById('ag-metric-grid').innerHTML = METRICS.map(m => {
+    const s = scores[m.key] || {a:0, b:0, winner:'tie'};
+    const flagCls = s.winner==='a' ? 'win-a' : s.winner==='b' ? 'win-b' : 'win-tie';
+    const flagLbl = s.winner==='a' ? nameA : s.winner==='b' ? nameB : 'TIE';
+    return `<div class="ag-mc">
+      <div class="ag-mc-name">${m.label}</div>
+      <div class="ag-mc-winner-flag ${flagCls}">${flagLbl}</div>
+      <div class="ag-mc-scores">
+        <div class="ag-mc-score"><div class="ag-mc-num score-a">${s.a}</div><div class="ag-mc-lbl">${nameA}</div></div>
+        <div class="ag-mc-vs">vs</div>
+        <div class="ag-mc-score"><div class="ag-mc-num score-b">${s.b}</div><div class="ag-mc-lbl">${nameB}</div></div>
+      </div>
+      <div class="ag-mc-bar-wrap">
+        <div class="ag-mc-bar-row"><div class="ag-mc-bar-track"><div class="ag-mc-bar-fill-a" style="width:${s.a}%"></div></div></div>
+        <div class="ag-mc-bar-row"><div class="ag-mc-bar-track"><div class="ag-mc-bar-fill-b" style="width:${s.b}%"></div></div></div>
+      </div>
+    </div>`;
   }).join('');
-  document.getElementById('ag-summary').textContent = scores.summary || '';
-  const rawEl = document.getElementById('ag-raw-strip');
-  rawEl.innerHTML = `
-    <div class="ag-raw-card"><div class="ag-raw-lbl">Reply Length</div><div class="ag-raw-vals">
-      <div><div class="ag-raw-num-a">${agWrdA||'—'}</div><div class="ag-raw-sub">${nameA} words</div></div>
-      <div><div class="ag-raw-num-b">${agWrdB||'—'}</div><div class="ag-raw-sub">${nameB} words</div></div>
-    </div></div>
-    <div class="ag-raw-card"><div class="ag-raw-lbl">Tokens Used</div><div class="ag-raw-vals">
-      <div><div class="ag-raw-num-a">${agTokA||'—'}</div><div class="ag-raw-sub">${nameA}</div></div>
-      <div><div class="ag-raw-num-b">${agTokB||'—'}</div><div class="ag-raw-sub">${nameB}</div></div>
-    </div></div>`;
-  document.getElementById('ag-scorecard').style.display = '';
+
+  // Token proof
+  const wLonger = agWrdA > agWrdB ? nameA : nameB;
+  const wRatio = agWrdA && agWrdB ? (Math.max(agWrdA,agWrdB)/Math.min(agWrdA,agWrdB)).toFixed(1) : null;
+  const tCheaper = agTokA < agTokB ? nameA : nameB;
+  const tDiff = Math.abs(agTokA - agTokB);
+  document.getElementById('ag-token-strip').innerHTML = `
+    <div class="ag-token-card">
+      <div class="ag-token-lbl">Reply Length</div>
+      <div class="ag-token-row"><span class="ag-token-policy">${nameA}</span><span class="ag-token-val-a">${agWrdA||'—'} words</span></div>
+      <div class="ag-token-row"><span class="ag-token-policy">${nameB}</span><span class="ag-token-val-b">${agWrdB||'—'} words</span></div>
+      ${wRatio && parseFloat(wRatio)>=1.1 ? `<div class="ag-token-note">${wLonger} wrote ${wRatio}× more</div>` : ''}
+    </div>
+    <div class="ag-token-card">
+      <div class="ag-token-lbl">Tokens Consumed</div>
+      <div class="ag-token-row"><span class="ag-token-policy">${nameA}</span><span class="ag-token-val-a">${agTokA||'—'}</span></div>
+      <div class="ag-token-row"><span class="ag-token-policy">${nameB}</span><span class="ag-token-val-b">${agTokB||'—'}</span></div>
+      ${tDiff>10 ? `<div class="ag-token-note">${tCheaper} used ${tDiff.toLocaleString()} fewer tokens</div>` : ''}
+    </div>`;
+
+  // Show proof screen
+  const proof = document.getElementById('ag-proof');
+  proof.style.display = 'flex';
+
+  // Load history
+  agLoadHistory();
+}
+
+function agToggleOutputs() {
+  const wrap = document.getElementById('ag-cmp-outputs');
+  const toggle = document.getElementById('ag-outputs-toggle');
+  const showing = wrap.style.display !== 'none';
+  wrap.style.display = showing ? 'none' : 'grid';
+  toggle.classList.toggle('open', !showing);
+}
+
+async function agLoadHistory() {
+  const el = document.getElementById('ag-history-wrap');
+  if (!el) return;
+  try {
+    const r = await fetch('/api/compare/stats');
+    const d = await r.json();
+    if (!d.runs) { el.innerHTML = ''; return; }
+    const r2 = await fetch('/api/compare/history');
+    const hist = await r2.json();
+    if (!hist.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<table class="ag-history-table">
+      <thead><tr><th>Prompt</th><th>A</th><th>B</th><th>Winner</th><th>Score</th><th>Tokens A</th><th>Tokens B</th></tr></thead>
+      <tbody>${hist.slice(0,10).map(h => {
+        const w = h.scores?.overall_winner;
+        const wName = w==='a'?h.name_a:w==='b'?h.name_b:'TIE';
+        const wCls = w==='a'?'ag-history-winner-a':w==='b'?'ag-history-winner-b':'';
+        const metrics = ['adherence','depth','clarity','efficiency','confidence'];
+        const avg = metrics.reduce((s,m)=>s+((h.scores?.[m]?.a||0)+(h.scores?.[m]?.b||0))/2,0)/metrics.length;
+        return `<tr>
+          <td><div class="ag-history-prompt" title="${h.prompt||''}">${h.prompt||'—'}</div></td>
+          <td style="color:var(--accent);font-weight:700">${h.name_a||'—'}</td>
+          <td style="color:var(--magenta2);font-weight:700">${h.name_b||'—'}</td>
+          <td class="${wCls}">${wName}</td>
+          <td class="ag-history-score">${avg.toFixed(0)}</td>
+          <td class="ag-history-score" style="color:var(--accent)">${h.tokens_a||'—'}</td>
+          <td class="ag-history-score" style="color:var(--magenta2)">${h.tokens_b||'—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } catch(e) { el.innerHTML = ''; }
 }
 
 async function agLoadStats() {
@@ -2239,6 +2404,15 @@ def ag_compare():
     return Response(stream_with_context(generate()),
                     content_type="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+@app.route('/api/compare/history')
+def ag_compare_history():
+    if not COMPARE_LOG.exists():
+        return jsonify([])
+    try:
+        return jsonify(json.loads(COMPARE_LOG.read_text()))
+    except Exception:
+        return jsonify([])
 
 @app.route('/api/compare/stats')
 def ag_compare_stats():
