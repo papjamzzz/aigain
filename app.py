@@ -467,11 +467,11 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .t2 .ag-ch-val{color:var(--purple2);text-shadow:0 0 20px rgba(167,139,250,.4);}
 .t3 .ag-ch-val{color:var(--magenta2);text-shadow:0 0 20px rgba(240,171,255,.4);}
 .ag-fader-rail{flex:1;display:flex;justify-content:center;min-height:0;padding:4px 0;}
-.ag-fader-track{width:calc(100% - 16px);height:100%;background:rgba(2,6,14,.94);border-radius:5px;position:relative;cursor:ns-resize;touch-action:none;overflow:hidden;transition:box-shadow .15s;}
+.ag-fader-track{width:calc(100% - 16px);height:100%;background:rgba(2,6,14,.94);border-radius:5px;position:relative;cursor:ns-resize;touch-action:none;overflow:visible;transition:box-shadow .15s;}
 .t1 .ag-fader-track{border:1px solid rgba(0,180,172,.22);box-shadow:inset 0 0 0 1px rgba(0,180,172,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
 .t2 .ag-fader-track{border:1px solid rgba(139,92,246,.22);box-shadow:inset 0 0 0 1px rgba(139,92,246,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
 .t3 .ag-fader-track{border:1px solid rgba(217,70,239,.22);box-shadow:inset 0 0 0 1px rgba(217,70,239,.05),inset 0 8px 28px rgba(0,0,0,.92),0 0 0 1px rgba(0,0,0,.6);}
-.ag-fader-fill{position:absolute;bottom:0;left:0;right:0;pointer-events:none;transition:height .04s linear;}
+.ag-fader-fill{position:absolute;bottom:0;left:0;right:0;pointer-events:none;transition:height .04s linear;border-radius:0 0 4px 4px;}
 .t1 .ag-fader-fill{background:linear-gradient(0deg,rgba(0,148,140,.94) 0%,rgba(0,200,192,.72) 40%,rgba(0,232,224,.46) 75%,rgba(100,255,250,.18) 100%);box-shadow:0 0 24px rgba(0,200,192,.4),0 0 60px rgba(0,180,175,.12),inset 0 0 32px rgba(0,160,155,.08);}
 .t2 .ag-fader-fill{background:linear-gradient(0deg,rgba(88,28,180,.94) 0%,rgba(120,64,224,.72) 40%,rgba(155,104,248,.46) 75%,rgba(210,185,255,.18) 100%);box-shadow:0 0 24px rgba(139,92,246,.4),0 0 60px rgba(139,92,246,.12),inset 0 0 32px rgba(100,58,200,.08);}
 .t3 .ag-fader-fill{background:linear-gradient(0deg,rgba(180,28,160,.94) 0%,rgba(217,70,200,.72) 40%,rgba(240,130,230,.46) 75%,rgba(255,200,248,.18) 100%);box-shadow:0 0 24px rgba(217,70,239,.4),0 0 60px rgba(217,70,239,.12),inset 0 0 32px rgba(180,40,200,.08);}
@@ -1769,7 +1769,7 @@ function setDockFader(field, val) {
   const h = track.offsetHeight || 200;
   const pct = val * 100;
   fill.style.height  = pct + '%';
-  thumb.style.bottom = (val * (h - THUMB_H * 2)) + 'px';
+  thumb.style.bottom = (val * (h - THUMB_H)) + 'px';
   if (valEl) valEl.textContent = val.toFixed(2);
 }
 
