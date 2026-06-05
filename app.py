@@ -7,11 +7,19 @@ import urllib.request, urllib.error
 load_dotenv()
 app = Flask(__name__)
 
-DATA_DIR   = Path(__file__).parent / "data"
-ORG_FILE   = DATA_DIR / "org.json"
-KEYS_FILE  = DATA_DIR / "api_keys.json"
-USAGE_FILE = DATA_DIR / "usage_log.json"
+DATA_DIR     = Path(__file__).parent / "data"
+ORG_FILE     = DATA_DIR / "org.json"
+KEYS_FILE    = DATA_DIR / "api_keys.json"
+USAGE_FILE   = DATA_DIR / "usage_log.json"
+PRESETS_FILE = DATA_DIR / "presets.json"
 DATA_DIR.mkdir(exist_ok=True)
+
+def load_presets() -> dict:
+    try:    return json.loads(PRESETS_FILE.read_text())
+    except: return {}
+
+def save_presets(p: dict):
+    PRESETS_FILE.write_text(json.dumps(p, indent=2))
 
 # ── Live fader state ──────────────────────────────────────────────────────────
 STATE_DIR  = DATA_DIR  # use data/ — works on Railway and local
@@ -606,6 +614,17 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 .ag-history-score{font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;}
 .ag-history-empty{text-align:center;padding:28px;color:var(--text3);font-size:11px;font-style:italic;}
 
+.ag-preset-bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;padding:12px 14px;background:var(--panel);border:1px solid var(--border);border-radius:5px;}
+.ag-preset-lbl{font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);flex-shrink:0;}
+.ag-preset-input{flex:1;height:32px;background:var(--panel2);border:1px solid var(--border2);border-radius:3px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;padding:0 10px;outline:none;transition:border-color .15s;}
+.ag-preset-input:focus{border-color:var(--accent);}
+.ag-preset-save-btn{height:32px;padding:0 14px;border-radius:3px;border:1px solid rgba(0,221,212,.35);background:rgba(0,221,212,.06);color:var(--accent);font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;flex-shrink:0;}
+.ag-preset-save-btn:hover{background:rgba(0,221,212,.14);}
+.ag-preset-msg{font-size:9px;color:var(--accent);font-weight:700;min-height:14px;margin-top:-10px;margin-bottom:4px;letter-spacing:.04em;}
+.ag-preset-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.ag-preset-chip{display:flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:3px;background:rgba(0,221,212,.06);border:1px solid rgba(0,221,212,.2);font-size:9px;font-weight:700;color:var(--text2);}
+.ag-preset-chip-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:0;line-height:1;transition:color .1s;}
+.ag-preset-chip-del:hover{color:var(--red);}
 .ag-winner-chip{font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
 .ag-winner-a{color:var(--accent);background:rgba(0,221,212,.1);border:1px solid rgba(0,221,212,.3);}
 .ag-winner-b{color:var(--magenta2);background:rgba(217,70,239,.1);border:1px solid rgba(217,70,239,.3);}
@@ -831,6 +850,14 @@ body{background:var(--bg);background-image:radial-gradient(rgba(0,196,232,.03) 1
 
     <!-- RUN view -->
     <div id="ag-cmp-run">
+      <!-- Save current org policy as preset -->
+      <div class="ag-preset-bar">
+        <span class="ag-preset-lbl">Save current policy as</span>
+        <input class="ag-preset-input" id="ag-preset-name" type="text" placeholder="preset name…" maxlength="40" onkeydown="if(event.key==='Enter')agSavePreset()">
+        <button class="ag-preset-save-btn" onclick="agSavePreset()">Save</button>
+      </div>
+      <div class="ag-preset-msg" id="ag-preset-msg"></div>
+      <div class="ag-preset-chips" id="ag-preset-chips"></div>
       <div class="ag-cmp-sel-row">
         <div class="ag-cmp-sel-group">
           <div class="ag-cmp-sel-lbl">Policy A</div>
@@ -1426,7 +1453,7 @@ function showPage(name){
   document.querySelectorAll('.nav-btn').forEach(b=>{
     if(b.textContent.toLowerCase().includes(name)) b.classList.add('active');
   });
-  if (name === 'compare') agPopulateSelects();
+  if (name === 'compare') agLoadPresets();
 }
 
 // ── Modals ─────────────────────────────────────────────────────────────────────
@@ -1697,26 +1724,85 @@ loadKeys();
 
 // ── COMPARE PAGE ──────────────────────────────────────────────────────────────
 
+let agPresets = {};
+
+async function agLoadPresets() {
+  try {
+    const r = await fetch('/api/presets');
+    agPresets = await r.json();
+    agRenderPresetChips();
+    agPopulateSelects();
+  } catch(e) {}
+}
+
+function agRenderPresetChips() {
+  const el = document.getElementById('ag-preset-chips');
+  if (!el) return;
+  const names = Object.keys(agPresets);
+  if (!names.length) { el.innerHTML = ''; return; }
+  el.innerHTML = names.map(n =>
+    `<div class="ag-preset-chip"><span>${n}</span><button class="ag-preset-chip-del" onclick="agDeletePreset('${n.replace(/'/g,"\\'")}')">✕</button></div>`
+  ).join('');
+}
+
+async function agSavePreset() {
+  const nameEl = document.getElementById('ag-preset-name');
+  const msgEl  = document.getElementById('ag-preset-msg');
+  const name   = nameEl.value.trim();
+  if (!name) { msgEl.textContent = 'Enter a name first.'; return; }
+  const policy = ORG?.policy;
+  if (!policy) return;
+  const r = await fetch('/api/presets', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, policy})});
+  if (r.ok) {
+    agPresets[name] = {policy};
+    agRenderPresetChips();
+    agPopulateSelects();
+    nameEl.value = '';
+    msgEl.textContent = `"${name}" saved.`;
+    setTimeout(() => msgEl.textContent = '', 2000);
+  }
+}
+
+async function agDeletePreset(name) {
+  await fetch(`/api/presets/${encodeURIComponent(name)}`, {method:'DELETE'});
+  delete agPresets[name];
+  agRenderPresetChips();
+  agPopulateSelects();
+}
+
 function agPopulateSelects() {
   if (!window.ORG) return;
   const teams = ORG.teams || [];
-  const opts  = teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-  const orgOpt = `<option value="__org__">Org Default</option>`;
-  document.getElementById('ag-sel-a').innerHTML = orgOpt + opts;
-  document.getElementById('ag-sel-b').innerHTML = orgOpt + opts;
-  if (teams.length >= 1) document.getElementById('ag-sel-b').selectedIndex = 1;
+  const teamOpts = `<optgroup label="── Teams ──">${teams.map(t => `<option value="team:${t.id}">${t.name}</option>`).join('')}</optgroup>`;
+  const orgOpt  = `<option value="__org__">Org Default</option>`;
+  const presetNames = Object.keys(agPresets);
+  const presetOpts = presetNames.length
+    ? `<optgroup label="── Saved Presets ──">${presetNames.map(n => `<option value="preset:${n}">${n}</option>`).join('')}</optgroup>`
+    : '';
+  const html = orgOpt + teamOpts + presetOpts;
+  document.getElementById('ag-sel-a').innerHTML = html;
+  document.getElementById('ag-sel-b').innerHTML = html;
+  if (teams.length >= 1) document.getElementById('ag-sel-b').selectedIndex = 2;
 }
 
 function agGetPolicy(selId) {
   const val = document.getElementById(selId).value;
   if (val === '__org__') return ORG.policy;
-  const team = (ORG.teams || []).find(t => t.id === val);
-  return team ? team.policy : ORG.policy;
+  if (val.startsWith('team:')) {
+    const team = (ORG.teams || []).find(t => t.id === val.slice(5));
+    return team ? team.policy : ORG.policy;
+  }
+  if (val.startsWith('preset:')) {
+    const p = agPresets[val.slice(7)];
+    return p ? p.policy : ORG.policy;
+  }
+  return ORG.policy;
 }
 
 function agGetName(selId) {
   const sel = document.getElementById(selId);
-  return sel.options[sel.selectedIndex]?.text || sel.value;
+  const opt = sel.options[sel.selectedIndex];
+  return opt ? opt.text : sel.value;
 }
 
 function agSwitchTab(tab) {
@@ -1923,7 +2009,7 @@ async function agLoadStats() {
 }
 
 // populate compare selects when page loads
-document.addEventListener('DOMContentLoaded', () => setTimeout(agPopulateSelects, 500));
+document.addEventListener('DOMContentLoaded', () => setTimeout(agLoadPresets, 500));
 
 // ── CTRL DOCK ────────────────────────────────────────────────────────────────
 
@@ -2404,6 +2490,29 @@ def ag_compare():
     return Response(stream_with_context(generate()),
                     content_type="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+@app.route('/api/presets', methods=['GET'])
+def get_presets():
+    return jsonify(load_presets())
+
+@app.route('/api/presets', methods=['POST'])
+def save_preset():
+    data = request.get_json() or {}
+    name = data.get("name", "").strip()
+    policy = data.get("policy")
+    if not name or not policy:
+        return jsonify({"error": "name and policy required"}), 400
+    presets = load_presets()
+    presets[name] = {"policy": policy, "created": int(time.time())}
+    save_presets(presets)
+    return jsonify({"ok": True, "name": name})
+
+@app.route('/api/presets/<name>', methods=['DELETE'])
+def delete_preset(name):
+    presets = load_presets()
+    presets.pop(name, None)
+    save_presets(presets)
+    return jsonify({"ok": True})
 
 @app.route('/api/compare/history')
 def ag_compare_history():
